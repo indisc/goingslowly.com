@@ -70,7 +70,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('develop', ['copy', 'coffee', 'concat']);
+  grunt.registerTask('develop', ['copy', 'coffee', 'concat', 'compass']);
   grunt.registerTask('production', ['default', 'mincss', 'uglify']);
   grunt.registerTask('default', 'develop');
 
