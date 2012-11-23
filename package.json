@@ -1,0 +1,15 @@
+{
+  "name": "goingslowly",
+  "version": "0.1.0",
+  "private": "true",
+  "devDependencies": {
+    "grunt": "git://github.com/gruntjs/grunt.git#devel",
+    "grunt-contrib-concat": "~0.1.0",
+    "grunt-contrib-coffee": "git://github.com/gruntjs/grunt-contrib-coffee.git#devel",
+    "grunt-contrib-copy": "git://github.com/gruntjs/grunt-contrib-copy.git#devel",
+    "grunt-contrib-compass": "~0.1.0",
+    "grunt-contrib-mincss": "git://github.com/gruntjs/grunt-contrib-mincss.git#master",
+    "grunt-contrib-uglify": "git://github.com/gruntjs/grunt-contrib-uglify.git#devel",
+    "grunt-contrib-watch": "~0.1.0"
+  }
+}

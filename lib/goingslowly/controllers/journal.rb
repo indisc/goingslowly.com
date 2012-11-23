@@ -1,0 +1,250 @@
+module GS
+  class App < Sinatra::Base
+    subdomain :journal do
+
+      ##
+      # Main journal page, show most current entry.
+      #
+      get '/' do
+        slim :journal_entry, {
+          :layout => :layout_journal,
+          :locals => Journal.latest.context(request.xhr?)
+        }
+      end
+
+      ##
+      # Journal entry page.  If request is XHR, respond with
+      # the entry only (for slide effect), otherwise respond
+      # with the entire page layout.
+      #
+      get %r{^/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)$} do
+        journal = Journal.lookup(params[:year],params[:month],params[:slug])
+        pass if journal.nil?
+
+        slim :journal_entry, {
+          :layout => request.xhr? ? false : :layout_journal,
+          :locals => journal.context(request.xhr?)
+        }
+      end
+
+      ##
+      # Journal topic and country listings.
+      # TODO: implement pagination?
+      #
+      ['/topic/:topic','/country/:topic'].each do |route|
+        get route do
+          topic = JournalTopic.byName(params[:topic]).first
+          pass if topic.nil?
+
+          # ensure country topics appear on country pages
+          if topic.isCountry? && request.path_info[1] == "t"
+            redirect "/country/#{params[:topic]}", 301
+          end
+
+          journals = topic.journals.order(:stamp.desc).all
+
+          slim :journal_topic, {
+            :layout => :layout_journal,
+            :locals => {
+              :topic => topic,
+              :journals => journals,
+              :count => journals.length
+            }
+          }
+        end
+      end
+
+      ##
+      # Journal entry page, as viewed under a topic or country section.
+      #
+      [%r{^/topic/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)$},
+       %r{^/country/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)$}].each do |route|
+        get route do
+
+          topic = JournalTopic.byName(params[:topic]).first
+          if topic.nil?
+            redirect "/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
+          end
+
+          # ensure country topics appear on country pages
+          if topic.isCountry? && request.path_info[1] == "t"
+            redirect "/country/#{params[:topic]}/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
+          end
+
+          journal = Journal.lookup(params[:year],params[:month],params[:slug])
+          pass if journal.nil?
+
+          slim :journal_entry, {
+            :layout => request.xhr? ? false : :layout_journal,
+            :locals => journal.context(request.xhr?, topic)
+          }
+        end
+      end
+
+      ##
+      # Journals listed by rating.
+      #
+      get '/rating/:rating' do
+        rating = JournalRating.byName(params[:rating]).first
+        pass if rating.nil?
+
+        journals = rating.journals.order(:stamp.desc).all
+
+        slim :journal_rating, {
+          :layout => :layout_journal,
+          :locals => {
+            :rating => rating,
+            :journals => journals,
+            :count => journals.length
+          }
+        }
+      end
+
+      ##
+      # Journals listed by month.
+      #
+      get %r{^/(?<year>20\d{2})/(?<month>\d{2})$} do
+        journals = Journal.byMonth(params[:year],params[:month]).all
+        pass if journals.nil?
+
+        slim :journal_datelist, {
+          :layout => :layout_journal,
+          :locals => {
+            :display => journals.first.stamp.strftime("%B, %Y"),
+            :journals => journals,
+            :count => journals.length
+          }
+        }
+      end
+
+      ##
+      # Journals listed by year.
+      #
+      get %r{^/(?<year>20\d{2})$} do
+        journals = Journal.byYear(params[:year]).all
+        pass if journals.nil?
+
+        slim :journal_datelist, {
+          :layout => :layout_journal,
+          :locals => {
+            :display => params[:year],
+            :journals => journals,
+            :count => journals.length
+          }
+        }
+      end
+
+      ##
+      # Journals listed by bookmarks
+      #
+      get '/bookmarks' do
+        noCache
+        bookmarks = request.cookies['bookmarks']
+        if bookmarks
+          bookmarks = bookmarks.split(',').map { |mark| mark.to_i }
+          journals = Journal.publishedList.
+                             where(:journal__id=>bookmarks).
+                             order(:stamp.desc).all
+        else
+          journals = []
+        end
+
+        slim :journal_bookmarks, {
+          :layout => :layout_journal,
+          :locals => {
+            :journals => journals,
+            :count => journals.length
+          }
+        }
+      end
+
+      ##
+      # Search Sphinx database and display results.
+      # TODO: implement pagination?
+      #
+      get '/search/:query' do
+        matches = Search.query(params[:query])
+        if matches.empty?
+          journals = []
+        else
+          journals = Journal.publishedList.where(:journal__id=>matches).order(:stamp.desc).all
+        end
+
+        slim :journal_search, {
+          :layout => :layout_journal,
+          :locals => {
+            :journals => journals,
+            :count => journals.length
+          }
+        }
+      end
+
+      ##
+      # Receive, sanitize and redirect to SEO-friendly url.
+      #
+      post '/search' do
+        redirect "/search/#{Search.sanitize(params[:search])}"
+      end
+
+      ##
+      # Journal entry page, as viewed with a search
+      #
+      get %r{^/search/(?<query>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)$} do
+        noCache
+        journal = Journal.lookup(params[:year],params[:month],params[:slug])
+        pass if journal.nil?
+        slim :journal_entry, {
+          :layout => request.xhr? ? false : :layout_journal,
+          :locals => journal.context(request.xhr?, nil, params[:query])
+        }
+      end
+
+      ##
+      # Receive and store comments for any journal entry, invalidating
+      # all possible pages that could be cached to ensure the comment
+      # appears immediately.
+      #
+      post '/comment' do
+        # abort on spammers who filled the honeypot field
+        halt 401 if !params[:age].empty?
+        # create journal entry
+        comment = JournalComment.new(params[:comment])
+        comment.recaptcha = params
+        begin
+          comment.save()
+          # send email notifications for this comment
+          comment.notify.each do |email|
+            begin
+              sendEmail(email, 'Going Slowly Comment', comment.email)
+            rescue
+
+            end
+          end
+          # clear all possible cache locations for this journal
+          comment.journal.cacheLocations.each do |url|
+            cacheClear(request.host+url)
+          end
+          # redirect back to page.
+          formRedirect(request.referrer)
+        rescue
+          formError(comment.errors)
+        end
+      end
+
+      ##
+      # Display RSS feed.
+      #
+      get '/rss' do
+        noCache
+        content_type 'application/rss+xml'
+        slim :rss, {
+          :layout => false,
+          :locals => {
+            :entries => Journal.published.order(:stamp.desc).limit(25).all
+          }
+        }
+      end
+
+    end
+  end
+end
