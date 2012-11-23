@@ -40,11 +40,11 @@ module GS
     def validate
       super
       validates_presence [:name, :email, :body], :allow_blank => false
-      errors.add(:email,'invalid email') if !validEmail?(email)
+      #errors.add(:email,'invalid email') if !validEmail?(email)
 
-      if !recaptchaCorrect?(recaptcha)
-        errors.add(:recaptcha,'letters did not match')
-      end
+      #if !recaptchaCorrect?(recaptcha)
+      #  errors.add(:recaptcha,'letters did not match')
+      #end
     end
 
   end
