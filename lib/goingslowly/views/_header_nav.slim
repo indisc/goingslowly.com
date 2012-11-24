@@ -1,7 +1,7 @@
 header#top
   nav
     a#logo href="http://goingslowly.com" title="return to home"
-    form action="http://journal.goingslowly.loc/search" method="post" onsubmit="return gs.search();"
+    form action="#{CONFIG['url']['journal']}/search" method="post" onsubmit="return gs.search();"
       input#search autocomplete="off" name="search" placeholder="search" type="text" value=""
       #searchloader
       a.social.rss.external href="http://feeds.feedburner.com/BicycleTouringAroundTheWorld" title="follow our rss"
