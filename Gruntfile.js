@@ -54,7 +54,8 @@ module.exports = function(grunt) {
     },
 
     uglify: {
-      'public/assets/site.js': 'public/assets/site.js'
+      'public/assets/site.js': 'public/assets/site.js',
+      'public/assets/ie.js': '<%= assets %>/js/ie.js'
     },
 
     mincss: {
