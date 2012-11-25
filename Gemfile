@@ -19,3 +19,5 @@ gem 'dalli'
 gem 'kgio' # speed up dallli
 gem 'aws'
 gem 'rmagick'
+gem 'jpegoptim'
+gem 'optipng'

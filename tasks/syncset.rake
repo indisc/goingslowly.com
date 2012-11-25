@@ -1,22 +1,18 @@
 task :syncset do
+  require './lib/goingslowly'
   require 'aws/s3'
   require 'open-uri'
   require 'RMagick'
-  require './lib/goingslowly'
-
-  # connect to s3
-  AWS::S3::Base.establish_connection!(
-    :access_key_id     => AUTH['aws']['access_key_id'],
-    :secret_access_key => AUTH['aws']['secret_access_key']
-  )
+  require 'jpegoptim'
+  require 'optipng'
 
   # photo bucket
   bucket = 'photos.goingslowly.com'
 
   # photos in defined set
-  photos = GS::Flickr.photosInSet(ENV['id'])
+  photos = flickr.photosets.getPhotos(:photoset_id=>ENV['id']).photo
 
-  # save a photo to s3
+  # save an image to s3 after compressing it
   def store(type, name, blob, bucket, access)
     puts "Storing #{type}/#{name}..."
     s3file = AWS::S3::S3Object.store("#{type}/#{name}", blob, bucket, {
@@ -26,8 +22,24 @@ task :syncset do
     })
   end
 
+  # optimize / compress image with jpegoptim or optipng
+  def optimize(blob, type)
+    case type
+      when 'jpg'
+        tmp = 'tmp/tmp.jpg'
+        File.open(tmp,'w+') { |f| f.write(blob) }
+        Jpegoptim.optimize([tmp], { :preserve => true, :strip => :all })
+        File.read(tmp)
+      when /png$/i
+        tmp = 'tmp/tmp.png'
+        File.open(tmp,'w+') { |f| f.write(blob) }
+        Optipng([tmp])
+        File.read(tmp)
+    end
+  end
+
   # resize a photo and return a blob
-  def resize(blob, width)
+  def resize(blob, width, type)
     Magick::Image.from_blob(blob).first.resize_to_fit(width).to_blob {
       self.interlace = Magick::PlaneInterlace
       self.quality = 80
@@ -37,14 +49,15 @@ task :syncset do
   # iterate photos and save them to s3
   photos.each do |photo|
     photo = flickr.photos.getInfo(:photo_id=>photo.id)
-    file = "#{photo.id}.#{photo.originalformat}"
+    type = photo.originalformat
+    file = "#{photo.id}.#{type}"
 
     if !AWS::S3::S3Object.exists? "original/#{file}", bucket
-      data = open(FlickRaw.url_o(photo)).read
-      store(:thumbnail, file, resize(data, 96), bucket, :public_read)
-      store(:normal, file, resize(data, 785), bucket, :public_read)
-      store(:doubled, file, resize(data, 1570), bucket, :public_read)
-      store(:original, file, data, bucket, :private)
+      blob = open(FlickRaw.url_o(photo)).read
+      store(:thumbnail, file, optimize(resize(blob, 192, type), type), bucket, :public_read)
+      store(:normal, file, optimize(resize(blob, 785, type), type), bucket, :public_read)
+      store(:doubled, file, optimize(resize(blob, 1570, type), type), bucket, :public_read)
+      #store(:original, file, optimize(blob, type), bucket, :private)
     end
 
   end
