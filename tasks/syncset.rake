@@ -1,7 +1,7 @@
 task :syncset do
   require 'aws/s3'
   require 'open-uri'
-  require 'rmagick'
+  require 'RMagick'
   require './lib/goingslowly'
 
   # connect to s3
