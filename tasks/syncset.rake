@@ -52,13 +52,13 @@ task :syncset do
     type = photo.originalformat
     file = "#{photo.id}.#{type}"
 
-    if !AWS::S3::S3Object.exists? "original/#{file}", bucket
-      blob = open(FlickRaw.url_o(photo)).read
-      store(:thumbnail, file, optimize(resize(blob, 192, type), type), bucket, :public_read)
-      store(:normal, file, optimize(resize(blob, 785, type), type), bucket, :public_read)
-      store(:doubled, file, optimize(resize(blob, 1570, type), type), bucket, :public_read)
-      #store(:original, file, optimize(blob, type), bucket, :private)
-    end
+    # read photo from flickr
+    blob = open(FlickRaw.url_o(photo)).read
 
+    # store thumbnail, normal and doubled (for retina display eventually) sizes
+    store(:thumbnail, file, optimize(resize(blob, 192, type), type), bucket, :public_read)
+    store(:normal, file, optimize(resize(blob, 785, type), type), bucket, :public_read)
+    store(:doubled, file, optimize(resize(blob, 1570, type), type), bucket, :public_read)
+    #store(:original, file, optimize(blob, type), bucket, :private)
   end
 end
