@@ -17,3 +17,5 @@ gem 'riddle'
 gem 'flickraw-cached'
 gem 'dalli'
 gem 'kgio' # speed up dallli
+gem 'aws'
+gem 'rmagick'
