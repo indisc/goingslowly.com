@@ -27,6 +27,8 @@ SPHINX.limit = CONFIG['sphinx']['limit']
 # Spool up flickr integration.
 FlickRaw.api_key = AUTH['flickr']['api_key']
 FlickRaw.shared_secret = AUTH['flickr']['shared_secret']
+flickr.access_token = AUTH['flickr']['access_token']
+flickr.access_secret = AUTH['flickr']['access_secret']
 
 ##
 # Sequel::Model customization ({http://sequel.rubyforge.org/ Sequel})
