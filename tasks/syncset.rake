@@ -1,3 +1,4 @@
+
 task :syncset do
   require './lib/goingslowly'
   require 'aws/s3'
@@ -5,6 +6,12 @@ task :syncset do
   require 'RMagick'
   require 'jpegoptim'
   require 'optipng'
+
+  # connect to s3
+  AWS::S3::Base.establish_connection!(
+   :access_key_id => AUTH['aws']['access_key_id'],
+   :secret_access_key => AUTH['aws']['secret_access_key']
+  )
 
   # photo bucket
   bucket = 'photos.goingslowly.com'
