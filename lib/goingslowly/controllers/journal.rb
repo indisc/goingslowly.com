@@ -17,7 +17,13 @@ module GS
       # the entry only (for slide effect), otherwise respond
       # with the entire page layout.
       #
-      get %r{^/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)$} do
+      get %r{^/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$} do
+
+        # hack off any extra junk from url and redirect to entry
+        if !params[:junk].empty?
+          redirect "/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
+        end
+
         journal = Journal.lookup(params[:year],params[:month],params[:slug])
         pass if journal.nil?
 
@@ -57,9 +63,14 @@ module GS
       ##
       # Journal entry page, as viewed under a topic or country section.
       #
-      [%r{^/topic/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)$},
-       %r{^/country/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)$}].each do |route|
+      [%r{^/topic/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$},
+       %r{^/country/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$}].each do |route|
         get route do
+
+          # hack off any extra junk from url and redirect to entry
+          if !params[:junk].empty?
+            redirect "/topic/#{params[:topic]}/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
+          end
 
           topic = JournalTopic.byName(params[:topic]).first
           if topic.nil?
