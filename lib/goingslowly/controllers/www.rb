@@ -272,6 +272,13 @@ module GS
         }
       end
 
+      ##
+      # Redirect journal URLs pointed at main domain.
+      #
+      get %r{^/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$} do
+        redirect "#{CONFIG['url']['journal']}/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
+      end
+
       #get '/budget' do
       #  daysleft = days_in_month(Date.today.year, Date.today.month)-Date.today.day
       #  owed = 55000
