@@ -40,7 +40,11 @@ module GS
       ['/topic/:topic','/country/:topic'].each do |route|
         get route do
           topic = JournalTopic.byName(params[:topic]).first
-          pass if topic.nil?
+
+          # redirect to search for topics that don't exist
+          if topic.nil?
+            redirect "/search/#{params[:topic]}"
+          end
 
           # ensure country topics appear on country pages
           if topic.isCountry? && request.path_info[1] == "t"
