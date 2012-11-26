@@ -178,6 +178,13 @@ module GS
       # TODO: implement pagination?
       #
       get '/search/:query' do
+
+        # redirect searches for topics/countries to topic/country page
+        topic = JournalTopic.byName(params[:query]).first
+        if !topic.nil?
+          redirect topic.href
+        end
+
         matches = Search.query(params[:query])
         if matches.empty?
           journals = []
