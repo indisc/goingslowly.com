@@ -33,6 +33,7 @@ module GS
       select(Sequel.lit('DISTINCT lower(email)').as(:email),:journal_id).
       where(:alerts=>true,:journal_id=>journal_id).
       exclude(:email=>nil).
+      exclude(:email=>['tyler@sleekcode.net','taraalan@gmail.com']).
       where{|o| o.id < @values[:id]}.
       all.map { |i| i[:email] }
     end
