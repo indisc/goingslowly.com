@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
 
-  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-compass');
@@ -12,13 +11,6 @@ module.exports = function(grunt) {
 
     meta: grunt.file.readYAML('config/goingslowly.yml'),
     assets: 'lib/goingslowly/assets',
-    copy: {
-      widgets: {
-        files: {
-          'public/assets/widget/': ['<%= assets %>/js/widget/**/*']
-        }
-      }
-    },
 
     coffee: {
       gs: {
@@ -71,7 +63,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('develop', ['copy', 'coffee', 'concat', 'compass']);
+  grunt.registerTask('develop', ['coffee', 'concat', 'compass']);
   grunt.registerTask('production', ['default', 'mincss', 'uglify']);
   grunt.registerTask('default', 'develop');
 
