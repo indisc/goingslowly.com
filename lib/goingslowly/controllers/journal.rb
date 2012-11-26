@@ -202,7 +202,7 @@ module GS
       end
 
       ##
-      # Journal entry page, as viewed with a search
+      # Journal entry page, as viewed with a search.
       #
       get %r{^/search/(?<query>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)$} do
         noCache
@@ -212,6 +212,13 @@ module GS
           :layout => request.xhr? ? false : :layout_journal,
           :locals => journal.context(request.xhr?, nil, params[:query])
         }
+      end
+
+      ##
+      # Redirect ancient search urls from blogger.
+      #
+      get '/search/label/:query' do
+        redirect "/search/#{params[:query]}", 301
       end
 
       ##
