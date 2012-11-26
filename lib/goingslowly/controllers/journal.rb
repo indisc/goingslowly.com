@@ -256,6 +256,13 @@ module GS
         }
       end
 
+      ##
+      # Redirect ancient RSS url from blogger.
+      #
+      get '/feeds/posts/default' do
+        redirect '/rss', 301
+      end
+
     end
   end
 end
