@@ -13,7 +13,11 @@ module GS
     end
 
     def body
-      body = Sanitize.clean(@values[:body], :elements => %w[br a strong b i u em strike])
+      body = Sanitize.clean(
+        @values[:body],
+        :elements => %w[br a strong b i u em strike],
+        :attributes => {'a' => ['href'] }
+      )
       body.gsub(/\n/, '<br />')
     end
 
