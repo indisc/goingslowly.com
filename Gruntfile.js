@@ -1,11 +1,9 @@
 module.exports = function(grunt) {
 
-  grunt.loadNpmTasks('grunt-contrib-coffee');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-compass');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-mincss');
-  grunt.loadNpmTasks('grunt-contrib-watch');
+  var pkg = grunt.file.readJSON('package.json');
+  require('matchdep').filterDev(pkg,'grunt-contrib*').forEach(function(dep) {
+    grunt.loadNpmTasks(dep);
+  });
 
   grunt.initConfig({
 
