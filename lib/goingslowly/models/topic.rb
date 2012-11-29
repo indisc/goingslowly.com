@@ -1,6 +1,6 @@
 module GS
-  class JournalTopic < Sequel::Model
-    many_to_one :journal_section
+  class Topic < Sequel::Model
+    many_to_one :section
     many_to_many :journals, :class => :'GS::Journal'
 
     dataset_module do

@@ -39,7 +39,7 @@ module GS
       #
       ['/topic/:topic','/country/:topic'].each do |route|
         get route do
-          topic = JournalTopic.byName(params[:topic]).first
+          topic = Topic.byName(params[:topic]).first
 
           # redirect to search for topics that don't exist
           if topic.nil?
@@ -76,7 +76,7 @@ module GS
             redirect "/topic/#{params[:topic]}/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
           end
 
-          topic = JournalTopic.byName(params[:topic]).first
+          topic = Topic.byName(params[:topic]).first
           if topic.nil?
             redirect "/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
           end
@@ -180,7 +180,7 @@ module GS
       get '/search/:query' do
 
         # redirect searches for topics/countries to topic/country page
-        topic = JournalTopic.byName(params[:query]).first
+        topic = Topic.byName(params[:query]).first
         if !topic.nil?
           redirect topic.href
         end

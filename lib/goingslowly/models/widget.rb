@@ -1,5 +1,5 @@
 module GS
-  class JournalWidget < Sequel::Model
+  class Widget < Sequel::Model
     many_to_many :journal
   end
 end

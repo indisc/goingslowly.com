@@ -4,12 +4,12 @@ module GS
   class Journal < Sequel::Model
     include Helpers
     many_to_one :photo
-    many_to_one :author, :class => :'GS::JournalAuthor', :key => :journal_author_id
-    many_to_one :prefix, :class => :'GS::JournalTitle', :key => :journal_title_id
-    many_to_one :rating, :class => :'GS::JournalRating', :key => :journal_rating_id
-    many_to_many :topics, :class=> :'GS::JournalTopic', :right_key => :journal_topic_id, :left_key => :journal_id
-    many_to_many :widgets, :class=> :'GS::JournalWidget', :right_key => :journal_widget_id, :left_key => :journal_id
-    many_to_many :locations, :class=> :'GS::Location', :right_key => :location_id, :left_key => :journal_id
+    many_to_one :author
+    many_to_one :prefix
+    many_to_one :rating
+    many_to_many :topics, :class=> :'GS::Topic'
+    many_to_many :widgets, :class=> :'GS::Widget'
+    many_to_many :locations, :class=> :'GS::Location'
     one_to_many :comments, :class => :'GS::JournalComment'
 
     dataset_module do
@@ -89,11 +89,11 @@ module GS
     end
 
     def nextInTopic(topic_id)
-      JournalTopic[:id=>topic_id].journals_dataset.next(stamp)
+      Topic[:id=>topic_id].journals_dataset.next(stamp)
     end
 
     def prevInTopic(topic_id)
-      JournalTopic[:id=>topic_id].journals_dataset.prev(stamp)
+      Topic[:id=>topic_id].journals_dataset.prev(stamp)
     end
 
     def onThisDay

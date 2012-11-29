@@ -28,6 +28,8 @@ Sequel.migration do
       column :f_id, String
       column :s_id, String
       column :filename, String
+      column :uploaded, TrueClass, :null=>false, :default=>false
+      column :uploading, TrueClass, :null=>false, :default=>false
 
       foreign_key :photo_set_id, :photo_set, :key=>[:id]
 

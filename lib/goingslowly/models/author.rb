@@ -1,5 +1,5 @@
 module GS
-  class JournalAuthor < Sequel::Model
+  class Author < Sequel::Model
     one_to_many :journal
   end
 end

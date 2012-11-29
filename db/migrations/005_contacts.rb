@@ -51,8 +51,8 @@ Sequel.migration do
 
   down do
     drop_table(:contact_list_member)
-    drop_table(:concat_list)
-    drop_table(:concat)
+    drop_table(:contact_list)
+    drop_table(:contact)
     drop_table(:contact_type)
   end
 

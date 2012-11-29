@@ -1,5 +1,5 @@
 module GS
-  class JournalRating < Sequel::Model
+  class Rating < Sequel::Model
     one_to_many :journals, :class => :'GS::Journal'
 
     dataset_module do

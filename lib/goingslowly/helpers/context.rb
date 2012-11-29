@@ -12,9 +12,9 @@ module GS
                              limit(24).
                              order(:stamp.desc).
                              all,
-        :topic_sections => JournalSection.topics.all,
+        :topic_sections => Section.topics.all,
         :archive => Journal.published.countByMonth.all,
-        :countries => JournalTopic.countries.all
+        :countries => Topic.countries.all
       }
     end
   end

@@ -14,7 +14,7 @@ module GS
                              all,
         :topic_sections => JournalSection.topics.all,
         :archive => Journal.published.countByMonth.all,
-        :countries => JournalTopic.countries.all
+        :countries => Topic.countries.all
       }
     end
   end

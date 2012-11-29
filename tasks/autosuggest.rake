@@ -1,14 +1,14 @@
 task :autosuggest do
   require './lib/goingslowly'
   autosuggest = []
-  GS::JournalTopic.countries.all.each do |topic|
+  GS::Topic.countries.all.each do |topic|
     autosuggest.push({
       :name => topic.name,
       :url => CONFIG['url']['journal']+topic.href,
       :prefix => "<strong>Country:</strong> "
     })
   end
-  GS::JournalTopic.topics.all.each do |topic|
+  GS::Topic.topics.all.each do |topic|
     autosuggest.push({
       :name => topic.name,
       :url => CONFIG['url']['journal']+topic.href,
