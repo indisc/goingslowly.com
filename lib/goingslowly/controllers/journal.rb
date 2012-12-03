@@ -236,7 +236,7 @@ module GS
       post '/comment' do
         # abort on spammers who filled the honeypot field
         if !params[:age].empty?
-          sendEmail('tyler@sleekcode.net','stupid spammer',params.inspect)
+          #sendEmail('tyler@sleekcode.net','stupid spammer',params.inspect)
           halt 401
         end
 
