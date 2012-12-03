@@ -64,6 +64,13 @@ module GS
       end
 
       ##
+      # Redirect photos until custom photo pages are configured.
+      #
+      get '/photo/:id' do
+        redirect "http://flickr.com/photos/tylerkellen/#{params[:id]}"
+      end
+
+      ##
       # A viewable listing of all our photo sets on flickr, grouped by collection.
       #
       get '/photos/?:title?/?:set_id?' do
