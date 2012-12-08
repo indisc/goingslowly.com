@@ -48,12 +48,18 @@ module Rack
       if env['REQUEST_METHOD'] == 'GET' &&
          env['nocache'].nil? &&
          env['PATH_INFO'][0..7] != "/assets/"
-        MC.set(key(env),response.join("\n"),nil,:raw=>true)
+        begin
+          MC.set(key(env),response.join("\n"),nil,:raw=>true)
+        rescue
+        end
       end
       # If the environment includes an array of keys to clear, do so
       # before this request is fullfilled.
       if env['cacheClear'] && env['cacheClear'].kind_of?(Array)
-        env['cacheClear'].each { |k| MC.delete(k) }
+        begin
+          env['cacheClear'].each { |k| MC.delete(k) }
+        rescue
+        end
       end
       [status, headers, response]
     end

@@ -4,17 +4,43 @@ module GS
     TTL = 3600
 
     ##
-    # Get a list of flickr sets.
+    # Get a list of flickr sets, from cache if possible.
     #
     def self.sets
-      flickr.photosets.getList(:user_id => AUTH['flickr']['id'])
+      key = 'flickr.photoset.getList'
+      sets = nil
+      begin
+        sets = MC.get(key)
+      rescue
+      end
+      if sets.nil?
+        sets = flickr.photosets.getList(:user_id => AUTH['flickr']['id'])
+      end
+      begin
+        MC.set(key, sets, TTL)
+      rescue
+      end
+      sets
     end
 
     ##
-    # Get a list of flickr collections.
+    # Get a list of flickr collections, from cache if possible.
     #
     def self.collections
-      flickr.collections.getTree(:user_id => AUTH['flickr']['id'])
+      key = 'flickr.collections.getTree'
+      collections = nil
+      begin
+        collections = MC.get(key)
+      rescue
+      end
+      if collections.nil?
+        collections = flickr.collections.getTree(:user_id => AUTH['flickr']['id'])
+      end
+      begin
+        MC.set(key, collections, TTL)
+      rescue
+      end
+      collections
     end
 
     ##
