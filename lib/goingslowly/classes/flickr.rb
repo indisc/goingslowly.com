@@ -4,71 +4,40 @@ module GS
     TTL = 3600
 
     ##
-    # Get a list of flickr sets, from cache if possible.
+    # Get a list of flickr sets.
     #
     def self.sets
-      key = 'flickr.photoset.getList'
-      sets = MC.get(key)
-      if sets.nil?
-        sets = flickr.photosets.getList(:user_id => AUTH['flickr']['id'])
-      end
-      MC.set(key, sets, TTL)
-      sets
+      flickr.photosets.getList(:user_id => AUTH['flickr']['id'])
     end
 
     ##
-    # Get a list of flickr collections, from cache if possible.
+    # Get a list of flickr collections.
     #
     def self.collections
-      key = 'flickr.collections.getTree'
-      collections = MC.get(key)
-      if collections.nil?
-        collections = flickr.collections.getTree(:user_id => AUTH['flickr']['id'])
-      end
-      MC.set(key, collections, TTL)
-      collections
+      flickr.collections.getTree(:user_id => AUTH['flickr']['id'])
     end
 
     ##
-    # Get photo set info, from cache if possible.
+    # Get photo set info.
     #
     def self.setInfo(id=nil)
-      key = "flickr.photosets.getInfo.#{id}"
-      set = MC.get(key)
-      if set.nil?
-        set = flickr.photosets.getInfo(:photoset_id=>id)
-      end
-      MC.set(key, set, TTL)
-      set
+      set = flickr.photosets.getInfo(:photoset_id=>id)
     end
 
     ##
-    # Get a photos in a set, from cache if possible.
+    # Get a photos in a set.
     #
     def self.photosInSet(id=nil)
       # get most recent set if none is defined
       id = self.sets[0].id if id.nil?
-
-      key = "flickr.photosets.getPhotos.#{id}"
-      photos = MC.get(key)
-      if photos.nil?
-        photos = flickr.photosets.getPhotos(:photoset_id=>id)
-      end
-      MC.set(key, photos, TTL)
-      photos.photo
+      flickr.photosets.getPhotos(:photoset_id=>id).photo
     end
 
     ##
-    # Get a recently uploaded photos, from cache if possible.
+    # Get a recently uploaded photos.
     #
     def self.recentPhotos
-      key = "flickr.photos.getRecent"
-      photos = MC.get(key)
-      if photos.nil?
-        photos = flickr.photos.search(:user_id => AUTH['flickr']['id']).map { |photo| photo.id }
-      end
-      MC.set(key, photos, TTL)
-      photos
+      flickr.photos.search(:user_id => AUTH['flickr']['id']).map { |photo| photo.id }
     end
 
     ##
