@@ -17,9 +17,27 @@ require 'riddle'
 CONFIG = YAML::load(File.open('config/goingslowly.yml'))
 AUTH = YAML::load(File.open('config/auth.yml'))
 
+# remove this when Dalli merges my PR
+module Dalli
+  class Compressor
+    def self.compress(data)
+      io = StringIO.new("w")
+      gz = Zlib::GzipWriter.new(io)
+      gz.write(data)
+      gz.close
+      io.string
+    end
+
+    def self.decompress(data)
+      io = StringIO.new(data, "rb")
+      Zlib::GzipReader.new(io).read
+    end
+  end
+end
+
 # Connect to databases
 DB = Sequel.connect(CONFIG['db'])
-MC = Dalli::Client.new('localhost:11211')
+MC = Dalli::Client.new('localhost:11211',{:compress=>true})
 SPHINX = Riddle::Client.new(CONFIG['sphinx']['host'],CONFIG['sphinx']['port'])
 SPHINX.match_mode = CONFIG['sphinx']['match_mode'].to_sym
 SPHINX.limit = CONFIG['sphinx']['limit']
