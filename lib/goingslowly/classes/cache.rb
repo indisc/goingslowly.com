@@ -43,9 +43,10 @@ module Rack
     def call(env)
       status, headers, response = @app.call(env)
 
-      # Ignore non-get requests, requests where nocache has been set,
-      # or assets, which are ultimately delivered from CloudFront.
-      if env['REQUEST_METHOD'] == 'GET' &&
+      # Confirm if we should actually cache this page.
+      # Ignore assets, which are ultimately delivered from CloudFront.
+      if status == 200 &&
+         env['REQUEST_METHOD'] == 'GET' &&
          env['nocache'].nil? &&
          env['PATH_INFO'][0..7] != "/assets/"
         begin
