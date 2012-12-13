@@ -181,13 +181,13 @@ gs.journal =
       $("#infobox").fadeOut()
 
   showCommentForm: ->
-    #if $('#recaptcha').html() == ""
-    #  Recaptcha.create('6LfzVNgSAAAAAK6prNt161Cima1whf5VEOIlgQFj', 'recaptcha', {theme:'clean'});
 
     # enable form ajax
     gs.form.init($("#commentform"))
 
     $("#comment-slide").slideDown "normal", ->
+      if $('#recaptcha').html() == ""
+        Recaptcha.create('6LfzVNgSAAAAAK6prNt161Cima1whf5VEOIlgQFj', 'recaptcha', {theme:'clean'});
       $.scrollTo "#commentform",
         offset: -100
         duration: 200
