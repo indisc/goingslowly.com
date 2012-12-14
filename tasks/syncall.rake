@@ -1,11 +1,11 @@
-
-task :syncset do
+task :syncall do
   require './lib/goingslowly'
   require 'aws/s3'
   require 'open-uri'
   require 'RMagick'
   require 'jpegoptim'
   require 'optipng'
+  require 'digest/sha1'
 
   # connect to s3
   AWS::S3::Base.establish_connection!(
@@ -15,9 +15,6 @@ task :syncset do
 
   # photo bucket
   bucket = 's3.goingslowly.com'
-
-  # photos in defined set
-  photos = flickr.photosets.getPhotos(:photoset_id=>ENV['id']).photo
 
   # save an image to s3 after compressing it
   def store(type, name, blob, bucket, access)
@@ -46,8 +43,11 @@ task :syncset do
   end
 
   # iterate photos and save them to s3
-  photos.each do |photo|
-    photo = flickr.photos.getInfo(:photo_id=>photo.id)
+  while DB[:photo].where(:uploaded=>false).count != 0
+    f_id = DB[:photo].where(:uploaded=>false,:uploading=>false).order(:id).limit(1).get(:f_id)
+    DB[:photo].where(:f_id=>f_id).update(:uploading=>true)
+
+    photo = flickr.photos.getInfo(:photo_id=>f_id)
     type = photo.originalformat
     file = "#{photo.id}.#{type}"
 
@@ -57,7 +57,8 @@ task :syncset do
     # store thumbnail, normal and doubled (for retina display eventually) sizes
     store(:thumbnail, file, resize(blob, 192, type), bucket, :public_read)
     store(:normal, file, resize(blob, 783, type), bucket, :public_read)
-    #store(:doubled, file, resize(blob, 1570, type), bucket, :public_read)
-    #store(:original, file, optimize(blob, type), bucket, :private)
+    #store(:doubled, file, resize(blob, 1566, type), bucket, :public_read)
+
+    DB[:photo].where(:f_id=>f_id).update(:uploaded=>true,:uploading=>false)
   end
 end
