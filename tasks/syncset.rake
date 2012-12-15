@@ -26,8 +26,6 @@ end
 
 def sync_set(set, syncToCDN)
 
-  puts syncToS3
-
   # connect to s3
   s3 = GS::S3.new
 
@@ -45,6 +43,9 @@ def sync_set(set, syncToCDN)
 
     # if photo isn't in database, add it
     photo = GS::Photo.createFromFlickrAPI(flickrPhoto, set.id) if !photo
+
+    # update photo title
+    photo.update(:name=>flickrPhoto.title)
 
     # update references to which journal this appeared
     photo.setFlickrDescription
