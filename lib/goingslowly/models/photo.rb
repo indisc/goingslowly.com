@@ -2,8 +2,7 @@ module GS
   class Photo < Sequel::Model
     dataset_module do
       def byFlickrId(id)
-        id = where(:f_id=>id.to_s)
-        id.first.nil? ? where(:id=>1) : id
+        where(:f_id=>id)
       end
     end
 
