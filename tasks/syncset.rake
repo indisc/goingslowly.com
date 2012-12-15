@@ -17,12 +17,14 @@ task :syncset do
   photos.each do |photo|
 
     # get photo data
-    photo = flickr.photos.getInfo(:photo_id=>photo.id)
+    photo = flickr.photos.getInfo(:photo_id=>img.f_id)
+    url = FlickRaw.url_o(photo)
     type = photo.originalformat
-    file = "#{photo.id}.#{type}"
+    name = "#{photo.id}.#{type}"
 
     # read photo from flickr
-    blob = open(FlickRaw.url_o(photo)).read
+    puts "Reading #{url}..."
+    blob = open(url).read
 
     # store thumbnail
     S3.save({

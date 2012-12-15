@@ -17,13 +17,15 @@ task :syncall do
     img = Photo.where(:uploaded=>false,:uploading=>false).order(:id).first
     img.update(:uploading=>true)
 
-    # get photo data
+    # prep photo data
     photo = flickr.photos.getInfo(:photo_id=>img.f_id)
+    url = FlickRaw.url_o(photo)
     type = photo.originalformat
     name = "#{photo.id}.#{type}"
 
     # read photo from flickr
-    blob = open(FlickRaw.url_o(photo)).read
+    puts "Reading #{url}..."
+    blob = open(url).read
 
     # store thumbnail
     S3.save({
