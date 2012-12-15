@@ -1,52 +1,22 @@
-
 task :syncset do
-  require './lib/goingslowly'
-  require 'aws/s3'
   require 'open-uri'
-  require 'RMagick'
-  require 'jpegoptim'
-  require 'optipng'
+  require './lib/goingslowly'
+  require './lib/goingslowly/classes/s3'
+  include GS
 
-  # connect to s3
-  AWS::S3::Base.establish_connection!(
-   :access_key_id => AUTH['aws']['access_key_id'],
-   :secret_access_key => AUTH['aws']['secret_access_key']
-  )
+  # open connection to s3
+  S3 = S3.new
 
-  # photo bucket
+  # destination bucket
   bucket = 's3.goingslowly.com'
 
   # photos in defined set
   photos = flickr.photosets.getPhotos(:photoset_id=>ENV['id']).photo
 
-  # save an image to s3 after compressing it
-  def store(type, name, blob, bucket, access)
-    puts "Storing #{type}/#{name}..."
-    AWS::S3::S3Object.store("photos/#{type}/#{name}", blob, bucket, {
-      :cache_control => 'max-age=315360000, public',
-      :expires => (Time.now + 315360000).httpdate,
-      :access => access
-    })
-  end
-
-  # resize a photo and return a blob
-  def resize(blob, width, type)
-    tmp = "tmp/tmp.#{type}"
-    Magick::Image.from_blob(blob).first.resize_to_fit(width).sharpen(0,0.5).write(tmp) {
-      self.interlace = Magick::PlaneInterlace
-      self.quality = 85
-    }
-    case type
-      when 'jpg'
-        `jpegoptim --preserve --strip-com --strip-exif --strip-iptc tmp/tmp.jpg`
-      when /png$/i
-        Optipng.optimize([tmp])
-    end
-    File.read(tmp)
-  end
-
   # iterate photos and save them to s3
   photos.each do |photo|
+
+    # get photo data
     photo = flickr.photos.getInfo(:photo_id=>photo.id)
     type = photo.originalformat
     file = "#{photo.id}.#{type}"
@@ -54,10 +24,20 @@ task :syncset do
     # read photo from flickr
     blob = open(FlickRaw.url_o(photo)).read
 
-    # store thumbnail, normal and doubled (for retina display eventually) sizes
-    store(:thumbnail, file, resize(blob, 192, type), bucket, :public_read)
-    store(:normal, file, resize(blob, 783, type), bucket, :public_read)
-    #store(:doubled, file, resize(blob, 1570, type), bucket, :public_read)
-    #store(:original, file, optimize(blob, type), bucket, :private)
+    # store thumbnail
+    S3.save({
+      :name => "photos/thumbnail/#{file}",
+      :blob => GS::Media.resizePhoto(blob, 192, type),
+      :bucket => bucket,
+      :access => :public_read
+    })
+
+    # store normal size
+    S3.save({
+      :name => "photos/normal/#{file}",
+      :blob =>  GS::Media.resizePhoto(blob, 783, type),
+      :bucket => bucket,
+      :access => :public_read
+    })
   end
 end
