@@ -100,7 +100,7 @@ module GS
       # Journals listed by rating.
       #
       get '/rating/:rating' do
-        rating = JournalRating.byName(params[:rating]).first
+        rating = Rating.byName(params[:rating]).first
         pass if rating.nil?
 
         journals = rating.journals.order(:stamp.desc).all
