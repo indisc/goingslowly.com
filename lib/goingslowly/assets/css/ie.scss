@@ -84,3 +84,7 @@ hr { display: none }
 }
 
 #bookmarklink { right: 10px; }
+
+.slide-thumbs span {
+  -ms-behavior: url(/backgroundsize.htc);
+}

@@ -27,6 +27,7 @@ Sequel.migration do
       column :f_url_orig, String
       column :f_id, String
       column :s_id, String
+      column :type, String
       column :filename, String
       column :uploaded, TrueClass, :null=>false, :default=>false
       column :uploading, TrueClass, :null=>false, :default=>false

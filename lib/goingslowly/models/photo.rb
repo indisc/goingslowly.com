@@ -10,16 +10,16 @@ module GS
       "#{CONFIG['url']['flickr']}/#{f_id}"
     end
 
-    def src(type=:standard)
-      case type
-        when :standard
-          "#{CONFIG['url']['photos']}/#{s_id}-783x522.jpg"
+    def src(size=:normal)
+      case size
+        when :normal
+          "#{CONFIG['url']['photos']}/normal/#{f_id}.#{type}"
         when :large
           "#{f_url_base}_b.jpg"
         when :thumb
-          "#{CONFIG['url']['photos']}/#{s_id}-96x160.jpg"
+          "#{CONFIG['url']['photos']}/thumbnail/#{f_id}.#{type}"
         when :featured
-          "#{CONFIG['url']['photos']}/#{s_id}-172x115.jpg"
+          "#{CONFIG['url']['photos']}/thumbnail/#{f_id}.#{type}"
       end
     end
 

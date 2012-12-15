@@ -14,7 +14,7 @@
 .slide-next:hover{background-position:bottom right;}
 .slide-thumbs{margin-top:8px;overflow:auto;padding-bottom:0px!important;padding-right:0;}
 .slide-wrap:hover .slide-thumbs,.slide-wrap:hover .slide-mat{background-color:#000;-moz-box-shadow:0px 0px 5px rgba(0,0,0,.5);-webkit-box-shadow:0px 0px 5px rgba(0,0,0,.5);box-shadow:0px 0px 5px rgba(0,0,0,.5);}
-.slide-thumbs span{background-size:contain;display:block;float:left;width:104px;height:69px;margin:0 7px 7px 0;cursor:pointer;border:1px solid #000;@include border-radius(4px);opacity:.3;-webkit-transition: opacity 200ms ease;-moz-transition: opacity 200ms ease; transition: opacity 200ms ease;}
+.slide-thumbs span{background-size:cover;display:block;float:left;width:104px;height:69px;margin:0 7px 7px 0;cursor:pointer;border:1px solid #000;@include border-radius(4px);opacity:.3;-webkit-transition: opacity 200ms ease;-moz-transition: opacity 200ms ease; transition: opacity 200ms ease;}
 .slide-thumbs span.active,.slide-thumbs span:hover{opacity:1;}
 .slide-thumbs,.slide-mat{-webkit-transition: background 200ms ease;-moz-transition: background 200ms ease; transition: background 200ms ease;}
 .slide-wrap:hover span.title {display:block;}
