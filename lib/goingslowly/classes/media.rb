@@ -1,4 +1,5 @@
 require 'RMagick'
+require 'digest/sha1'
 
 module GS
   class Media
@@ -26,7 +27,8 @@ module GS
     # Resize a photo blob and return a blob.
     #
     def self.resizePhoto(blob, width, type)
-      tmp = "tmp/tmp.#{type}"
+      hash = Digest::SHA1.hexdigest(Time.now.to_f.to_s)
+      tmp = "tmp/#{hash}.#{type}"
       Magick::Image.from_blob(blob).first.resize_to_fit(width).sharpen(0,0.5).write(tmp) {
         self.interlace = Magick::PlaneInterlace
         self.quality = 85
@@ -42,7 +44,9 @@ module GS
         when /png$/i
           `optipng #{tmp}`
       end
-      File.read(tmp)
+      result = File.read(tmp)
+      File.delete(tmp)
+      result
     end
 
   end
