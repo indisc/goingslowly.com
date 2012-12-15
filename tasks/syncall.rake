@@ -37,10 +37,13 @@ task :syncall do
       when 'jpg'
         `jpegoptim --preserve --strip-com --strip-exif --strip-iptc tmp/tmp.jpg`
       when /png$/i
-        Optipng([tmp])
+        Optipng.optimize([tmp])
     end
     File.read(tmp)
   end
+
+  # clear any photos that didn't finish
+  DB[:photo].where(:uploading=>true,:uploaded=>false).update(:uploading=>false)
 
   # iterate photos and save them to s3
   while DB[:photo].where(:uploaded=>false).count != 0
@@ -60,5 +63,6 @@ task :syncall do
     #store(:doubled, file, resize(blob, 1566, type), bucket, :public_read)
 
     DB[:photo].where(:f_id=>f_id).update(:uploaded=>true,:uploading=>false)
+    GC.start
   end
 end

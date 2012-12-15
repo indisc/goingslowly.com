@@ -40,7 +40,7 @@ task :syncset do
       when 'jpg'
         `jpegoptim --preserve --strip-com --strip-exif --strip-iptc tmp/tmp.jpg`
       when /png$/i
-        Optipng([tmp])
+        Optipng.optimize([tmp])
     end
     File.read(tmp)
   end
