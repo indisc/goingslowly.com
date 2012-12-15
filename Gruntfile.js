@@ -19,7 +19,8 @@ module.exports = function(grunt) {
       },
       page: {
         files: {
-          'public/assets/page/*.js': ['<%= assets %>/js/page/*.coffee']
+          'public/assets/page/index.js': '<%= assets %>/js/page/index.coffee',
+          'public/assets/page/vaccinations.js': '<%= assets %>/js/page/vaccinations.coffee'
         }
       }
     },
