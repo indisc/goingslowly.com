@@ -6,8 +6,8 @@ module GS
       # Preview page for journal editing.
       #
       get '/preview/:id' do
+        protected!
         noCache
-        pass if ENV['RACK_ENV'] != 'development'
         journal = Journal[params[:id]]
         pass if journal.nil?
 

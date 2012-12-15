@@ -51,6 +51,26 @@ module GS
       end
     end
 
+    def protected!
+      unless authorized?
+        response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
+        throw(:halt, [401, "Not authorized\n"])
+      end
+    end
+
+    def authorized?
+      return true if !session[:authorized].nil?
+
+      @auth ||= Rack::Auth::Basic::Request.new(request.env)
+      if @auth.provided? &&
+         @auth.basic? &&
+         @auth.credentials &&
+         @auth.credentials[0] == AUTH['user'] &&
+         @auth.credentials[1] == AUTH['pass']
+         session[:authorized] = true
+      end
+    end
+
     ##
     # Find the number of days in a month.
     #
