@@ -26,7 +26,7 @@ module GS
         # lookup photo by id
         photo = photos[id]
         # render photo in specific form
-        Media.renderPhoto(type, photo) if !photo.nil?
+        Media.renderPhoto(type, photo)
       end
 
       # get photos using ids
