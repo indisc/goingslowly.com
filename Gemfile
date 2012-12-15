@@ -16,8 +16,6 @@ gem 'mail'
 gem 'riddle'
 gem 'flickraw-cached'
 gem 'dalli'
-gem 'kgio' # speed up dallli
+gem 'kgio' # speed up dalli
 gem 'aws'
 gem 'rmagick'
-gem 'jpegoptim'
-gem 'optipng'
