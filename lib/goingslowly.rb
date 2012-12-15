@@ -93,6 +93,7 @@ require 'goingslowly/classes/cache'
 # Load models.
 require 'goingslowly/models/news'
 require 'goingslowly/models/photo'
+require 'goingslowly/models/photo_set'
 require 'goingslowly/models/member'
 require 'goingslowly/models/prefix'
 require 'goingslowly/models/section'

@@ -66,6 +66,12 @@ module GS
       first
     end
 
+    def self.hasPhoto(id)
+      published.
+      where(:body.ilike("%#{id}%")).
+      order(:stamp)
+    end
+
     def cacheLocations
       # get all valid topic/country urls for this entry
       urls = topics.map { |topic| topic.href+href }

@@ -21,7 +21,7 @@ task :syncall do
     photo = flickr.photos.getInfo(:photo_id=>img.f_id)
     url = FlickRaw.url_o(photo)
     type = photo.originalformat
-    name = "#{photo.id}.#{type}"
+    filename = "#{photo.id}.#{type}"
 
     # read photo from flickr
     puts "Reading #{url}..."
@@ -29,7 +29,7 @@ task :syncall do
 
     # store thumbnail
     S3.save({
-      :name => "photos/thumbnail/#{name}",
+      :name => "photos/thumbnail/#{filename}",
       :blob => GS::Media.resizePhoto(blob, 192, type),
       :bucket => 's3.goingslowly.com',
       :access => :public_read
@@ -37,7 +37,7 @@ task :syncall do
 
     # store normal size
     S3.save({
-      :name => "photos/normal/#{name}",
+      :name => "photos/normal/#{filename}",
       :blob =>  GS::Media.resizePhoto(blob, 783, type),
       :bucket => 's3.goingslowly.com',
       :access => :public_read
