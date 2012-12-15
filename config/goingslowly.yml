@@ -3,7 +3,7 @@ url:
   cdn: http://cdn.goingslowly.com
   journal: http://journal.goingslowly.com
   map: http://map.goingslowly.com
-  photos: http://s3.goingslowly.com/photos
+  photos: http://photos.goingslowly.com
   flickr: http://flickr.com/photos/tylerkellen
 
 db:
