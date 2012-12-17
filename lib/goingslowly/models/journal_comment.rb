@@ -47,7 +47,11 @@ module GS
       validates_presence [:name, :email, :body], :allow_blank => false
       #errors.add(:email,'invalid email') if !validEmail?(email)
 
-      if !recaptchaCorrect?(recaptcha)
+      if recaptcha[:recaptcha_response_field] == AUTH['recaptcha']['admin']
+        @values[:authorpost] = true
+      end
+
+      if @values[:authorpost] != true && !recaptchaCorrect?(recaptcha)
         errors.add(:recaptcha,'letters did not match')
       end
     end
