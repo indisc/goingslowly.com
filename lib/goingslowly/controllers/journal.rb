@@ -236,7 +236,6 @@ module GS
       post '/comment' do
         # abort on spammers who filled the honeypot field
         if !params[:age].empty?
-          #sendEmail('tyler@sleekcode.net','stupid spammer',params.inspect)
           halt 401
         end
 
@@ -254,7 +253,8 @@ module GS
             end
           end
           # notify us of all comments
-          sendEmail(CONFIG['email']['to'], 'Going Slowly Comment', comment.email)
+          sendEmail('tyler@sleekcode.net', 'Going Slowly Comment', comment.email)
+          sendEmail('taraalan@gmail.com', 'Going Slowly Comment', comment.email)
 
           # clear all possible cache locations for this journal
           comment.journal.cacheLocations.each do |url|
