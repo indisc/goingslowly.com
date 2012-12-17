@@ -77,12 +77,14 @@ module GS
       urls = topics.map { |topic| topic.href+href }
       # get primary url
       urls.push(href)
-      # add cache locations for above pages as requested by AJAX
+      # add cache locations for above pages, as requested by AJAX
       urls.dup.each do |href|
         urls.push(href+"XMLHttpRequest")
       end
-      # if this is the latest entry, clear that page too
-      urls.push('/') if id == self.class.latest.id
+      # if this is the latest entry, clear journal home page too
+      if id == self.class.latest.id
+        urls.push('journal.goingslowly.com/')
+      end
       urls
     end
 
