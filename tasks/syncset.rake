@@ -26,6 +26,9 @@ end
 
 def sync_set(set, syncToCDN)
 
+  # clear any photos that didn't finish uploading
+  GS::Photo.where(:uploaded=>false,:uploading=>true).update(:uploading=>false)
+
   # connect to s3
   s3 = GS::S3.new
 
@@ -52,31 +55,41 @@ def sync_set(set, syncToCDN)
 
     if syncToCDN
 
-     ## read photo from flickr
-     puts "Reading #{photo.f_url_orig}..."
-     blob = open(photo.f_url_orig).read
+      if !photo.uploaded
 
-     # destination bucket
-     bucket = 's3.goingslowly.com'
+        # flag image as beginning upload
+        photo.update(:uploading=>true)
 
-     # filename
-     filename = "#{photo.f_id}.#{photo.type}"
+        ## read photo from flickr
+        puts "Reading #{photo.f_url_orig}..."
+        blob = open(photo.f_url_orig).read
 
-     # store thumbnail
-     s3.save({
-       :name => "photos/thumbnail/#{filename}",
-       :blob => GS::Media.resizePhoto(blob, 192, photo.type),
-       :bucket => bucket,
-       :access => :public_read
-     })
+        # destination bucket
+        bucket = 's3.goingslowly.com'
 
-     # store normal size
-     s3.save({
-       :name => "photos/normal/#{filename}",
-       :blob =>  GS::Media.resizePhoto(blob, 783, photo.type),
-       :bucket => bucket,
-       :access => :public_read
-     })
+        # filename
+        filename = "#{photo.f_id}.#{photo.type}"
+
+        # store thumbnail
+        s3.save({
+          :name => "photos/thumbnail/#{filename}",
+          :blob => GS::Media.resizePhoto(blob, 192, photo.type),
+          :bucket => bucket,
+          :access => :public_read
+        })
+
+        # store normal size
+        s3.save({
+          :name => "photos/normal/#{filename}",
+          :blob =>  GS::Media.resizePhoto(blob, 783, photo.type),
+          :bucket => bucket,
+          :access => :public_read
+        })
+
+        # flag image as uploaded to cdn
+        photo.update(:uploading=>false,:uploaded=>true)
+
+      end
     end
   end
 end
