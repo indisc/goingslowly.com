@@ -12,7 +12,7 @@ module GS
     end
 
     def cdn
-      "http://img#{(id%5)}.goingslowly.com/photos";
+      "http://img#{(id%2)}.goingslowly.com/photos";
     end
 
     def src(size=:normal)
