@@ -60,14 +60,10 @@ def sync_set(set, syncToCDN)
         # flag image as beginning upload
         photo.update(:uploading=>true)
 
-        ## read photo from flickr
+        # read photo from flickr
         puts "Reading #{photo.f_url_orig}..."
         blob = open(photo.f_url_orig).read
-
-        # destination bucket
         bucket = 's3.goingslowly.com'
-
-        # filename
         filename = "#{photo.f_id}.#{photo.type}"
 
         # store thumbnail
