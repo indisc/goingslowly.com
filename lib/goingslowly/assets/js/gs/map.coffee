@@ -107,6 +107,7 @@ gs.map =
       orange: @buildMarker('orange')
       yellow: @buildMarker('yellow')
       green: @buildMarker('green')
+      blue: @buildMarker('blue')
       shadow: new google.maps.MarkerImage(
         '//d1grml7t1u9jas.cloudfront.net/img/map/marker-shadow.png'
         new google.maps.Size(22, 20)
