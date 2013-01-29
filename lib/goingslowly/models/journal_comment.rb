@@ -31,12 +31,16 @@ module GS
     end
 
     def url
-      url = URI.parse(@values[:url])
-      if !url.scheme
-        "http://#{@values[:url]}"
-      elsif(%w{http https}.include?(u.scheme))
-        @values[:url]
-      else
+      begin
+        url = URI.parse(@values[:url])
+        if !url.scheme
+          "http://#{@values[:url]}"
+        elsif(%w{http https}.include?(url.scheme))
+          @values[:url]
+        else
+          nil
+        end
+      rescue
         nil
       end
     end
