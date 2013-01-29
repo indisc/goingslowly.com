@@ -1,3 +1,5 @@
+require 'uri'
+
 module GS
   class JournalComment < Sequel::Model
     many_to_one :journal
@@ -31,17 +33,29 @@ module GS
     end
 
     def url
-      begin
-        url = URI.parse(@values[:url])
-        if !url.scheme
-          "http://#{@values[:url]}"
-        elsif(%w{http https}.include?(url.scheme))
-          @values[:url]
-        else
+      url = @values[:url]
+
+      # todo: blank values should not be allowed in the database
+      if url.nil? || url.empty?
+        nil
+      else
+        # ensure url begins with a scheme
+        if url[/^http:\/\//].nil? && url[/^https:\/\//].nil?
+          url = 'http://'+url
+        end
+        # validate it
+        begin
+          uri = URI.parse(url)
+          if !['http','https'].include?(uri.scheme)
+            raise URI::InvalidURIError
+          end
+          if [:scheme, :host].any? { |i| uri.send(i).nil? }
+            raise URI::InvalidURIError
+          end
+          url
+        rescue
           nil
         end
-      rescue
-        nil
       end
     end
 
