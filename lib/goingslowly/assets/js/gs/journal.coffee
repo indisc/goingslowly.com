@@ -3,18 +3,30 @@ window.gs = gs = window.gs || {}
 gs.journal =
 
   loaded: false
+  popped: null
 
   # keep track of which JS widgets have been enabled
   widgets: {}
 
   # run on initial load for journal
   init: ->
+    # Used to detect initial (useless) popstate.  If history.state exists,
+    # pushState() has created the current entry so we can assume browser
+    # isn't going to fire initial popstate
+    @popped = ("state" of window.history and window.history.state isnt null)
+    @initialURL = location.href
+
     url = document.location.toString()
 
-    # code to run when state (page) changes
+    # code to run when back/forward button is hit
     if history.pushState
-      window.onpopstate = (event) ->
-        window.location.href = event.state.href if event.state
+      $(window).bind "popstate", (event) ->
+        # ignore inital popstate that some browsers fire on page load
+        initialPop = !@popped && location.href is @initialURL
+        @popped = true
+        return if initialPop
+        # use regular navigation for forward/back arrows
+        window.location.href = location.href
 
     # enable comments section if needed
     if url.match('#')
