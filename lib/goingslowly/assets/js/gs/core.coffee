@@ -22,7 +22,7 @@ $ ->
   ).removeAttr "title"
 
   # flag external links to open in a new window
-  $("a[rel=external],.external").live "click", (e) ->
+  $("a[rel=external],.external").on "click", (e) ->
     window.open @href
     e.preventDefault()
 

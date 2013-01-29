@@ -20,11 +20,12 @@ gs.journal =
 
     # code to run when back/forward button is hit
     if history.pushState
-      $(window).bind "popstate", (event) ->
+      $(window).bind "popstate", (event) =>
         # ignore inital popstate that some browsers fire on page load
         initialPop = !@popped && location.href is @initialURL
         @popped = true
         return if initialPop
+        console.log('navigating as normal to '+location.href)
         # use regular navigation for forward/back arrows
         window.location.href = location.href
 
