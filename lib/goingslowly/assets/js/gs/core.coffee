@@ -5,6 +5,12 @@ window._gaq = window._gaq || []
 window._gaq.push(["_setAccount", "UA-1653683-4"])
 window._gaq.push(["_trackPageview"])
 
+# replace initial state so it works properly with popstate
+# todo: does not work correctly with firefox for getting to initial page
+window.onload = ->
+  console.log('replacing initial state')
+  history.replaceState({real: true});
+
 # configure humane loggers
 humane.info = humane.spawn({addnCls: "humane-info", timeout: 3500})
 humane.error = humane.spawn({addnCls: "humane-error", timeout: 3500})
