@@ -30,6 +30,17 @@ module GS
       stamp.strftime("%B #{ordinalize(stamp.strftime('%e'))}, %Y at %l:%M %p")
     end
 
+    def url
+      url = URI.parse(@values[:url])
+      if !url.scheme
+        "http://#{@values[:url]}"
+      elsif(%w{http https}.include?(u.scheme))
+        @values[:url]
+      else
+        nil
+      end
+    end
+
     # return an array of emails for people who should receive a
     # notification about this comment
     def notify
