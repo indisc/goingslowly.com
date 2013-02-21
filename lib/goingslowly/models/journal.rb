@@ -83,7 +83,7 @@ module GS
       end
       # if this is the latest entry, clear journal home page too
       if id == self.class.latest.id
-        urls.push('journal.goingslowly.com/')
+        urls.push('/')
       end
       urls
     end
