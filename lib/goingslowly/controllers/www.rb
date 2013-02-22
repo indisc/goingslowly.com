@@ -279,6 +279,16 @@ module GS
         }
       end
 
+      get '/homesteading-year-of-preparation' do
+        slim :hayop, {
+          :layout => :layout_adventure,
+          :locals => {
+            :img => 'hayop',
+            :centeredY => false
+          }
+        }
+      end
+
       ##
       # Redirect journal URLs pointed at main domain.
       #

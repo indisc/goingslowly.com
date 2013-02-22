@@ -136,6 +136,7 @@
 
 #adventures {
   @include clearfix;
+  padding: 5px;
   margin:0 -20px 25px 0;
   a {
     display: block;
@@ -148,12 +149,12 @@
     height: 220px;
     float: left;
     margin: 5px 20px 15px 0;
-    background: transparent image-url("adventure/panels.jpg") no-repeat;
+    background: transparent image-url("adventure/thumbs.jpg") no-repeat;
     @include border-radius(3px);
-    @include box-shadow(0 0 10px rgba(0,0,0,.3));
+    @include box-shadow(0 0 5px rgba(0,0,0,.3));
     &:hover h1 { background-color:#000; }
     &:hover {
-      @include box-shadow(0 0 10px rgba(0,0,0,.8), 0 0 10px rgba(0,0,0,.8), 0 0 10px rgba(0,0,0,.8));
+      @include box-shadow(0 0 5px rgba(0,0,0,.8), 0 0 5px rgba(0,0,0,.8), 0 0 5px rgba(0,0,0,.8));
     }
     h1 {
       font-family: Dax;
@@ -179,6 +180,7 @@
   .btisa{ background-position: 0 -1540px !important; }
   .chrta { background-position: 0 -1760px !important; }
   .lhfoh { background-position: 0 -1980px !important; }
+  .hayop { background-position: 0 -2200px !important; }
 }
 
 /* Slider Box Styles */

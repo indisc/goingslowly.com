@@ -28,32 +28,6 @@ $ ->
   $("#about").bxSlider(slider)
   $("#recents").bxSlider(slider)
 
-  departure = new Date(2013, 3, 1).getTime()
-  countdown = ->
-    d = 0
-    h = 0
-    m = 0
-    s = 0
-    amount = departure - new Date().getTime()
-    out = ""
-    if amount < 0
-      $("#departure").html "NOW :)"
-    else
-      amount = Math.floor(amount / 1000)
-      d = Math.floor(amount / 86400)
-      amount = amount % 86400
-      h = Math.floor(amount / 3600)
-      amount = amount % 3600
-      m = Math.floor(amount / 60)
-      amount = amount % 60
-      s = Math.floor(amount)
-      out += d + " day" + ((if (d isnt 1) then "s" else "")) + ", "  if d isnt 0
-      out += h + " hour" + ((if (h isnt 1) then "s" else "")) + ", "  if d isnt 0 or h isnt 0
-      out += m + " minute" + ((if (m isnt 1) then "s" else "")) + ", "  if d isnt 0 or h isnt 0 or m isnt 0
-      out += s + " seconds"
-      $("#departure").html "Homesteading in Vermont begins in " + out + "!"
-      setTimeout countdown, 1000
-
   gs.photos.initEffects()
 
   countdown()
