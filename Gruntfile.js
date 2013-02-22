@@ -1,7 +1,6 @@
 module.exports = function(grunt) {
 
   require('matchdep').filterDev('grunt-contrib*').forEach(grunt.loadNpmTasks);
-  var path = require('path');
 
   grunt.initConfig({
 
