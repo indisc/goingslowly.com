@@ -149,7 +149,7 @@
     height: 220px;
     float: left;
     margin: 5px 20px 15px 0;
-    background: transparent image-url("adventure/thumbs.jpg") no-repeat;
+    background: transparent image-url("adventure/adventures.jpg") no-repeat;
     @include border-radius(3px);
     @include box-shadow(0 0 5px rgba(0,0,0,.3));
     &:hover h1 { background-color:#000; }
