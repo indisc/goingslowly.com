@@ -10,7 +10,7 @@ module GS
         slim :index, :locals => {
           :news => News.published.limit(2).all,
           :photos => Photo.byFlickrId(Flickr.recentPhotos).
-                           limit(32).all,
+                           limit(32).order(:date_taken.desc).all,
           :journals => footer[:journals],
           :footer => footer
         }
@@ -178,6 +178,15 @@ module GS
       ##
       # Synopsis pages for various adventures in our lives.
       ##
+      get '/going-slowly-the-adventure-begins' do
+        slim :gstab, {
+          :layout => :layout_adventure,
+          :locals => {
+            :img => 'gstab',
+            :centeredY => false
+          }
+        }
+      end
 
       get '/bicycle-touring-in-western-europe' do
         slim :btiwe, {
