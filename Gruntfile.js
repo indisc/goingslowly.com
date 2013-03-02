@@ -4,30 +4,38 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 
-    meta: grunt.file.readYAML('config/goingslowly.yml'),
-    assets: 'lib/goingslowly/assets',
+    meta: {
+      assets: {
+        src: 'lib/goingslowly/assets',
+        dest: 'public/assets',
+        cdn: 'http://cdn.goingslowly.com'
+      }
+    },
 
     coffee: {
       gs: {
-        files: {
-          'tmp/gs.js': ['<%= assets %>/js/gs/*.coffee']
-        },
+        src: ['<%= meta.assets.src %>/js/gs/*.coffee'],
+        dest: 'tmp/gs.js',
         options: {
           bare: true
         }
       },
       page: {
-        files: {
-          'public/assets/page/index.js': '<%= assets %>/js/page/index.coffee',
-          'public/assets/page/vaccinations.js': '<%= assets %>/js/page/vaccinations.coffee'
-        }
+        expand: true,
+        cwd: '<%= meta.assets.src %>/js',
+        src: 'page/*.coffee',
+        dest: '<%= meta.assets.dest %>',
+        ext: '.js'
       }
     },
 
     concat: {
-      'public/assets/site.js': ['<%= assets %>/js/lib/jquery.js',
-                                '<%= assets %>/js/lib/*.js',
-                                'tmp/gs.js']
+      js: {
+        src: ['<%= meta.assets.src %>/js/lib/jquery.js',
+              '<%= meta.assets.src %>/js/lib/*.js',
+              'tmp/gs.js'],
+        dest: '<%= meta.assets.dest %>/site.js'
+      }
     },
 
     compass: {
@@ -35,32 +43,57 @@ module.exports = function(grunt) {
         options: {
           raw: ['images_dir = "img/"',
                 'css_dir = "public/assets"',
-                'sass_dir = "<%= assets %>/css"',
-                'asset_host { |asset| "<%= meta.url.cdn %>" }'].join('\n')
+                'sass_dir = "<%= meta.assets.src %>/css"',
+                'asset_host { |asset| "<%= meta.assets.cdn %>" }'].join('\n')
         }
       }
     },
 
     uglify: {
-      'public/assets/site.js': 'public/assets/site.js',
-      'public/assets/ie.js': '<%= assets %>/js/ie.js'
+      '<%= meta.assets.dest %>/site.js': '<%= meta.assets.dest %>/site.js',
+      '<%= meta.assets.dest %>/ie.js': '<%= meta.assets.src %>/js/ie.js'
     },
 
     mincss: {
-      'public/assets/site.css': 'public/assets/site.css',
-      'public/assets/ie.css': 'public/assets/ie.css'
+      '<%= meta.assets.dest %>/site.css': '<%= meta.assets.dest %>/site.css',
+      '<%= meta.assets.dest %>/ie.css': '<%= meta.assets.dest %>/ie.css'
     },
 
     watch: {
-      src: {
-        files: ['<%= assets %>/**/*'],
-        tasks: ['build']
+      css: {
+        files: ['<%= meta.assets.src %>/css/**/*'],
+        tasks: ['compass']
+      },
+      js: {
+        files: ['<%= meta.assets.src %>/js/**/*'],
+        tasks: ['js']
       }
+    },
+
+    clean: {
+      tmp: ['tmp'],
+      assets: ['<%= meta.assets.dest %>']
     }
   });
 
-  grunt.registerTask('develop', ['coffee', 'concat', 'compass']);
-  grunt.registerTask('production', ['default', 'mincss', 'uglify']);
-  grunt.registerTask('default', 'develop');
+  grunt.registerTask('rackup', function () {
+    grunt.util.spawn({cmd: 'killall', args: ['rackup']}, function(){
+      grunt.util.spawn({cmd: 'rackup'}, function(){});
+    });
+  });
 
+  // concat site libs and coffeescript
+  grunt.registerTask('js', ['coffee', 'concat', 'clean:tmp']);
+
+  // prep site for development
+  grunt.registerTask('develop', ['clean:assets', 'js', 'compass']);
+
+  // start working environment
+  grunt.registerTask('work', ['develop', 'rackup', 'watch']);
+
+  // prep site for production (minify js/css)
+  grunt.registerTask('production', ['develop', 'uglify', 'cssmin']);
+
+  // start working
+  grunt.registerTask('default', ['work']);
 };
