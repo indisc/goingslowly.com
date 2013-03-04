@@ -29,5 +29,3 @@ $ ->
   $("#recents").bxSlider(slider)
 
   gs.photos.initEffects()
-
-  countdown()
