@@ -50,13 +50,21 @@ module.exports = function(grunt) {
     },
 
     uglify: {
-      '<%= meta.assets.dest %>/site.js': '<%= meta.assets.dest %>/site.js',
-      '<%= meta.assets.dest %>/ie.js': '<%= meta.assets.src %>/js/ie.js'
+      js: {
+        files: {
+          '<%= meta.assets.dest %>/site.js': '<%= meta.assets.dest %>/site.js',
+          '<%= meta.assets.dest %>/ie.js': '<%= meta.assets.src %>/js/ie.js'
+        }
+      }
     },
 
     mincss: {
-      '<%= meta.assets.dest %>/site.css': '<%= meta.assets.dest %>/site.css',
-      '<%= meta.assets.dest %>/ie.css': '<%= meta.assets.dest %>/ie.css'
+      css: {
+        files: {
+         '<%= meta.assets.dest %>/site.css': '<%= meta.assets.dest %>/site.css',
+         '<%= meta.assets.dest %>/ie.css': '<%= meta.assets.dest %>/ie.css'
+        }
+      }
     },
 
     watch: {
