@@ -92,7 +92,7 @@ module.exports = function(grunt) {
   grunt.registerTask('work', ['develop', 'rackup', 'watch']);
 
   // prep site for production (minify js/css)
-  grunt.registerTask('production', ['develop', 'uglify', 'cssmin']);
+  grunt.registerTask('production', ['develop', 'uglify', 'mincss']);
 
   // start working
   grunt.registerTask('default', ['work']);
