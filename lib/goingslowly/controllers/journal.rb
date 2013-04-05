@@ -19,13 +19,19 @@ module GS
       #
       get %r{^/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$} do
 
-        # hack off any extra junk from url and redirect to entry
-        if !params[:junk].empty?
-          redirect "/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
-        end
-
         journal = Journal.lookup(params[:year],params[:month],params[:slug])
         pass if journal.nil?
+
+        # hack off any extra junk from url and redirect to entry
+        if !params[:junk].empty?
+          noCache
+          if params[:junk] == "clearcache"
+            journal.cacheLocations.each do |url|
+              MC.delete(request.host+url)
+            end
+          end
+          redirect "/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
+        end
 
         slim :journal_entry, {
           :layout => request.xhr? ? false : :layout_journal,
