@@ -50,6 +50,9 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        report: false
+      },
       js: {
         files: {
           '<%= meta.assets.dest %>/site.js': '<%= meta.assets.dest %>/site.js',
@@ -58,12 +61,15 @@ module.exports = function(grunt) {
       }
     },
 
-    mincss: {
+    cssmin: {
+      options: {
+        report: false
+      },
       css: {
-        files: {
-         '<%= meta.assets.dest %>/site.css': '<%= meta.assets.dest %>/site.css',
-         '<%= meta.assets.dest %>/ie.css': '<%= meta.assets.dest %>/ie.css'
-        }
+        expand: true,
+        cwd: '<%= meta.assets.dest %>',
+        src: '*.css',
+        dest: '<%= meta.assets.dest %>'
       }
     },
 
@@ -75,6 +81,27 @@ module.exports = function(grunt) {
       js: {
         files: ['<%= meta.assets.src %>/js/**/*'],
         tasks: ['js']
+      }
+    },
+
+    compress: {
+      options: {
+        mode: 'gzip',
+        level: 9
+      },
+      js: {
+        expand: true,
+        cwd: '<%= meta.assets.dest %>',
+        src: '*.js',
+        dest: '<%= meta.assets.dest %>',
+        ext: '.js.gz'
+      },
+      css: {
+        expand: true,
+        cwd: '<%= meta.assets.dest %>',
+        src: '*.css',
+        dest: '<%= meta.assets.dest %>',
+        ext: '.css.gz'
       }
     },
 
@@ -100,7 +127,7 @@ module.exports = function(grunt) {
   grunt.registerTask('work', ['develop', 'rackup', 'watch']);
 
   // prep site for production (minify js/css)
-  grunt.registerTask('production', ['develop', 'uglify', 'mincss']);
+  grunt.registerTask('production', ['develop', 'uglify', 'cssmin', 'compress']);
 
   // start working
   grunt.registerTask('default', ['work']);

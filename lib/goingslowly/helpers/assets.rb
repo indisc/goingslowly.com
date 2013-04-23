@@ -18,7 +18,7 @@ module GS
       end
 
       if ENV['RACK_ENV'] == 'production'
-        CONFIG['url']['cdn']+"/assets/"+url
+        "#{CONFIG['url']['cdn']}/assets/#{url}.gz"
       else
         "/assets/#{url}"
       end
