@@ -1,5 +1,5 @@
 task :searchup do
-  sh "mkdir -p tmp/sphinx"
+  sh "mkdir search"
   sh "indexer --config config/sphinx.conf --all"
   sh "searchd --config config/sphinx.conf"
 end

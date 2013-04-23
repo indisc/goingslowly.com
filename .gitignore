@@ -5,3 +5,4 @@ tmp
 log
 config/auth.yml
 node_modules
+search
