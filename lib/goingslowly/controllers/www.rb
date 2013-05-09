@@ -306,6 +306,7 @@ module GS
       end
 
       get '/budget' do
+        noCache
         daysleft = days_in_month(Date.today.year, Date.today.month)-Date.today.day
         owed = 25000
         paid = 5000
