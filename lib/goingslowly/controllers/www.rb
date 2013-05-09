@@ -305,21 +305,21 @@ module GS
         redirect "#{CONFIG['url']['journal']}/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
       end
 
-      #get '/budget' do
-      #  daysleft = days_in_month(Date.today.year, Date.today.month)-Date.today.day
-      #  owed = 55000
-      #  paid = 55000
-      #  budget = 600.00
-      #  spent = DB[:budget].where(:id=>1).get(:total)
-      #  daily = ((budget-spent)/daysleft).round(2)
-      #  slim :budget, :locals => {
-      #    :owed => owed,
-      #    :paid => paid,
-      #    :budget => budget,
-      #    :spent => spent,
-      #    :daily => daily
-      #  }
-      #end
+      get '/budget' do
+        daysleft = days_in_month(Date.today.year, Date.today.month)-Date.today.day
+        owed = 25000
+        paid = 5000
+        budget = 600.00
+        spent = DB[:budget].where(:id=>1).get(:total)
+        daily = ((budget-spent)/daysleft).round(2)
+        slim :budget, :locals => {
+          :owed => owed,
+          :paid => paid,
+          :budget => budget,
+          :spent => spent,
+          :daily => daily
+        }
+      end
     end
   end
 end
