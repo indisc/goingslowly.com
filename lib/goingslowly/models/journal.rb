@@ -68,7 +68,7 @@ module GS
 
     def self.hasPhoto(id)
       published.
-      where(:body.ilike("%#{id}%")).
+      where(Sequel.ilike(:body,"%#{id}%")).
       order(:stamp)
     end
 
