@@ -11,12 +11,9 @@ module GS
       sets = nil
       begin
         sets = MC.get(key)
-      rescue
-      end
-      if sets.nil?
-        sets = flickr.photosets.getList(:user_id => AUTH['flickr']['id'])
-      end
-      begin
+        if sets.nil?
+          sets = flickr.photosets.getList(:user_id => AUTH['flickr']['id'])
+        end
         MC.set(key, sets, TTL)
       rescue
       end
@@ -31,12 +28,9 @@ module GS
       collections = nil
       begin
         collections = MC.get(key)
-      rescue
-      end
-      if collections.nil?
-        collections = flickr.collections.getTree(:user_id => AUTH['flickr']['id'])
-      end
-      begin
+        if collections.nil?
+          collections = flickr.collections.getTree(:user_id => AUTH['flickr']['id'])
+        end
         MC.set(key, collections, TTL)
       rescue
       end
@@ -47,23 +41,36 @@ module GS
     # Get photo set info.
     #
     def self.setInfo(id=nil)
-      set = flickr.photosets.getInfo(:photoset_id=>id)
+      begin
+        set = flickr.photosets.getInfo(:photoset_id=>id)
+      rescue
+        set = {}
+      end
+      set
     end
 
     ##
     # Get a photos in a set.
     #
     def self.photosInSet(id=nil)
-      # get most recent set if none is defined
-      id = self.sets[0].id if id.nil?
-      flickr.photosets.getPhotos(:photoset_id=>id).photo
+      begin
+        # get most recent set if none is defined
+        id = self.sets[0].id if id.nil?
+        flickr.photosets.getPhotos(:photoset_id=>id).photo
+      rescue
+        []
+      end
     end
 
     ##
     # Get a recently uploaded photos.
     #
     def self.recentPhotos
-      flickr.photos.search(:user_id => AUTH['flickr']['id']).map { |photo| photo.id }
+      begin
+        flickr.photos.search(:user_id => AUTH['flickr']['id']).map { |photo| photo.id }
+      rescue
+        []
+      end
     end
 
   end
