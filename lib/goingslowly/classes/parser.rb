@@ -29,31 +29,31 @@ module GS
         Media.renderPhoto(type, photo)
       end
 
-      # get photos using ids
-      videoTokens = self.getVideoTokens(input)
+      # get media from input
+      mediaTokens = self.getMediaTokens(input)
       # build regexp to match all tokens
-      videoRegexp = self.buildRegexp(videoTokens)
+      mediaRegexp = self.buildRegexp(mediaTokens)
 
       # replace all video tokens
-      input.gsub!(videoRegexp) do |token|
+      input.gsub!(mediaRegexp) do |token|
         # extract settings from token
         id, type, start = self.processToken(token)
         # render video in specific form
-        Media.renderVideo(type, {:id=>id,:start=>start})
+        Media.renderElement(type, {:id=>id,:start=>start})
       end
 
       input
     end
 
     ##
-    # Extract video tokens in the form of [{videoid,service}].
+    # Extract media tokens in the form of [{mediaid,service}].
     #
     # @option params [String] input
     #   The content to search.
     # @return [Array]
     #   An array of tokens.
     #
-    def self.getVideoTokens(input)
+    def self.getMediaTokens(input)
       input.scan(/\[\{[^\|\]]*\}\]/).flatten
     end
 

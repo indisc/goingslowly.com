@@ -16,11 +16,11 @@ module GS
     end
 
     ##
-    # Use Tilt to render a video object.
+    # Use Tilt to render a media object.
     #
-    def self.renderVideo(type, video)
-      template = Tilt.new("lib/goingslowly/views/_video_#{type}.slim")
-      template.render(nil, :item => video)
+    def self.renderElement(type, media)
+      template = Tilt.new("lib/goingslowly/views/_media_#{type}.slim")
+      template.render(nil, :item => media)
     end
 
     ##
