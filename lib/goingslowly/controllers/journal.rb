@@ -276,7 +276,7 @@ module GS
       ##
       # Display RSS feed.
       #
-      get '/rss' do
+      get '/rss/?' do
         noCache
         content_type 'application/rss+xml'
         slim :rss, {
