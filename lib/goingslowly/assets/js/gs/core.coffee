@@ -2,6 +2,8 @@ window.gs = gs = window.gs || {}
 
 # google analytics
 window._gaq = window._gaq || []
+pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js'
+window._gaq.push(['_require', 'inpage_linkid', pluginUrl])
 window._gaq.push(["_setAccount", "UA-1653683-4"])
 window._gaq.push(["_trackPageview"])
 
