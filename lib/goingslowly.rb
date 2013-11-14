@@ -12,12 +12,14 @@ require 'kgio'
 require 'sanitize'
 require 'flickraw-cached'
 require 'riddle'
+require 'soundcloud'
 
 # Load configs
 CONFIG = YAML::load(File.open('config/goingslowly.yml'))
 AUTH = YAML::load(File.open('config/auth.yml'))
 
 # Connect to databases
+Sequel.extension(:core_extensions)
 DB = Sequel.connect(CONFIG['db'])
 MC = Dalli::Client.new('localhost:11211',{:compress=>true,:compressor=>Dalli::GzipCompressor})
 SPHINX = Riddle::Client.new(CONFIG['sphinx']['host'],CONFIG['sphinx']['port'])
@@ -29,6 +31,9 @@ FlickRaw.api_key = AUTH['flickr']['api_key']
 FlickRaw.shared_secret = AUTH['flickr']['shared_secret']
 flickr.access_token = AUTH['flickr']['access_token']
 flickr.access_secret = AUTH['flickr']['access_secret']
+
+# Connect to Soundcloud
+SC = Soundcloud.new(:client_id=>AUTH['soundcloud']['client_id'])
 
 ##
 # Sequel::Model customization ({http://sequel.rubyforge.org/ Sequel})

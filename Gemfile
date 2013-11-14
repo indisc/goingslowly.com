@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+gem 'soundcloud'
 gem 'rack'
 gem 'rack-rewrite'
 gem 'thin'
