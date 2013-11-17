@@ -43,63 +43,59 @@ module GS
       # Journal topic and country listings.
       # TODO: implement pagination?
       #
-      ['/topic/:topic','/country/:topic'].each do |route|
-        get route do
-          topic = Topic.byName(params[:topic]).first
+      get %r{^/(topic|country)/(?<topic>[\w-]*)$} do
+        topic = Topic.byName(params[:topic]).first
 
-          # redirect to search for topics that don't exist
-          if topic.nil?
-            redirect "/search/#{params[:topic]}"
-          end
-
-          # ensure country topics appear on country pages
-          if topic.isCountry? && request.path_info[1] == "t"
-            redirect "/country/#{params[:topic]}", 301
-          end
-
-          journals = topic.journals.order(:stamp.desc).all
-
-          slim :journal_topic, {
-            :layout => :layout_journal,
-            :locals => {
-              :topic => topic,
-              :journals => journals,
-              :count => journals.length
-            }
-          }
+        # redirect to search for topics that don't exist
+        if topic.nil?
+          redirect "/search/#{params[:topic]}"
         end
+
+        # ensure country topics appear on country pages
+        if topic.isCountry? && request.path_info[1] == "t"
+          redirect "/country/#{params[:topic]}", 301
+        end
+
+        journals = topic.journals.order(:stamp.desc).all
+
+        slim :journal_topic, {
+          :layout => :layout_journal,
+          :locals => {
+            :topic => topic,
+            :journals => journals,
+            :count => journals.length
+          }
+        }
       end
 
       ##
       # Journal entry page, as viewed under a topic or country section.
       #
-      [%r{^/topic/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$},
-       %r{^/country/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$}].each do |route|
-        get route do
+      get %r{^/(topic|country)/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$} do
 
-          # hack off any extra junk from url and redirect to entry
-          if !params[:junk].empty?
-            redirect "/topic/#{params[:topic]}/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
-          end
-
-          topic = Topic.byName(params[:topic]).first
-          if topic.nil?
-            redirect "/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
-          end
-
-          # ensure country topics appear on country pages
-          if topic.isCountry? && request.path_info[1] == "t"
-            redirect "/country/#{params[:topic]}/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
-          end
-
-          journal = Journal.lookup(params[:year],params[:month],params[:slug])
-          pass if journal.nil?
-
-          slim :journal_entry, {
-            :layout => request.xhr? ? false : :layout_journal,
-            :locals => journal.context(request.xhr?, topic)
-          }
+        # hack off any extra junk from url and redirect to entry
+        if !params[:junk].empty?
+          redirect "/topic/#{params[:topic]}/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
         end
+
+        topic = Topic.byName(params[:topic]).first
+        if topic.nil?
+          redirect "/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
+        end
+
+        # ensure country topics appear on country pages
+        if topic.isCountry? && request.path_info[1] == "t"
+          redirect "/country/#{params[:topic]}/#{params[:year]}/#{params[:month]}/#{params[:slug]}", 301
+        end
+
+        journal = Journal.lookup(params[:year],params[:month],params[:slug])
+        pass if journal.nil?
+
+        slim :journal_entry, {
+          :layout => request.xhr? ? false : :layout_journal,
+          :locals => journal.context(request.xhr?, topic)
+        }
+
       end
 
       ##
