@@ -43,7 +43,7 @@ module GS
       # Journal topic and country listings.
       # TODO: implement pagination?
       #
-      get %r{^/(topic|country)/(?<topic>[\w-]*)$} do
+      get %r{^/(topic|country)/(?<topic>[\w -\+]*)$} do
         topic = Topic.byName(params[:topic]).first
 
         # redirect to search for topics that don't exist
@@ -71,7 +71,7 @@ module GS
       ##
       # Journal entry page, as viewed under a topic or country section.
       #
-      get %r{^/(topic|country)/(?<topic>.*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$} do
+      get %r{^/(topic|country)/(?<topic>[\w -\+]*)/(?<year>20\d{2})/(?<month>\d{2})/(?<slug>[\w-]*)/?(?<junk>.*)$} do
 
         # hack off any extra junk from url and redirect to entry
         if !params[:junk].empty?
