@@ -155,6 +155,10 @@ module GS
       Parser.process(@values[:body])
     end
 
+    def rssTitle
+      CGI::escapeHTML(title)
+    end
+
     def synopsis
       content = @values[:body].gsub(/\[\{[^\|\]]*\}\]/,'').gsub(/\[\|[^\|\]]*\|\]/,'')
       Sanitize.clean(content)[0...250]+'...'
