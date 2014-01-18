@@ -6,13 +6,16 @@ require 'sinatra/contrib'
 require 'sinatra/subdomain'
 require 'pg'
 require 'sequel'
+require 'sequel-noinflectors'
 require 'slim'
 require 'dalli'
 require 'kgio'
 require 'sanitize'
 require 'flickraw-cached'
 require 'riddle'
+require 'riddle/2.0.1'
 require 'soundcloud'
+require 'twitter'
 
 # Load configs
 CONFIG = YAML::load(File.open('config/goingslowly.yml'))
@@ -22,9 +25,19 @@ AUTH = YAML::load(File.open('config/auth.yml'))
 Sequel.extension(:core_extensions)
 DB = Sequel.connect(CONFIG['db'])
 MC = Dalli::Client.new('localhost:11211',{:compress=>true,:compressor=>Dalli::GzipCompressor})
+
+# Configure sphinx search client
 SPHINX = Riddle::Client.new(CONFIG['sphinx']['host'],CONFIG['sphinx']['port'])
 SPHINX.match_mode = CONFIG['sphinx']['match_mode'].to_sym
 SPHINX.limit = CONFIG['sphinx']['limit']
+
+# Spool up twitter integration
+TW = Twitter::REST::Client.new do |config|
+  config.consumer_key = AUTH['twitter']['consumer_key']
+  config.consumer_secret = AUTH['twitter']['consumer_secret']
+  config.access_token = AUTH['twitter']['access_token']
+  config.access_token_secret = AUTH['twitter']['access_token_secret']
+end
 
 # Spool up flickr integration.
 FlickRaw.api_key = AUTH['flickr']['api_key']
@@ -34,33 +47,6 @@ flickr.access_secret = AUTH['flickr']['access_secret']
 
 # Connect to Soundcloud
 SC = Soundcloud.new(:client_id=>AUTH['soundcloud']['client_id'])
-
-##
-# Sequel::Model customization ({http://sequel.rubyforge.org/ Sequel})
-#
-class Sequel::Model
-  plugin :validation_helpers
-  Sequel::Plugins::ValidationHelpers::DEFAULT_OPTIONS.merge!(
-    :presence=>{:message=>'cannot be empty'}
-  )
-  ##
-  # Determine associated table of model by inflecting class name.
-  #
-  # @return [Symbol]
-  #   The name of the table, de-camelcased with underscores.
-  #   Account = account
-  #   TransItem = trans_item
-  #
-  def self.implicit_table_name
-    underscore(demodulize(name)).to_sym
-  end
-  def self.pluralize(word)
-    word
-  end
-  def self.singularize(word)
-    word
-  end
-end
 
 # Load helpers.
 require 'goingslowly/helpers/utils'
