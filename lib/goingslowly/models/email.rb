@@ -3,7 +3,7 @@
 #
 module GS
   class Email < Sequel::Model
-
+    plugin :validation_helpers
     include Helpers
 
     attr_reader :request

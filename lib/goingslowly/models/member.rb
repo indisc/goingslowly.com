@@ -1,5 +1,6 @@
 module GS
   class Member < Sequel::Model
+    plugin :validation_helpers
     def validate
       super
       validates_presence [:name, :email]

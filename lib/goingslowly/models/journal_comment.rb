@@ -2,6 +2,7 @@ require 'uri'
 
 module GS
   class JournalComment < Sequel::Model
+    plugin :validation_helpers
     many_to_one :journal
 
     include Helpers
