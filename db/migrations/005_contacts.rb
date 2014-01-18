@@ -21,7 +21,6 @@ Sequel.migration do
       column :name_two, String
       column :email_two, String
       column :archived, TrueClass, :default=>false, :null=>false
-      column :cardsent, TrueClass, :default=>false, :null=>false
       column :notes, String, :text=>true
 
       foreign_key :contact_type_id, :contact_type, :null=>false
@@ -44,6 +43,7 @@ Sequel.migration do
 
       foreign_key :contact_list_id, :contact_list, :null=>false
       foreign_key :contact_id, :contact, :null=>false
+      column :cardsent, TrueClass, :default=>false, :null=>false
 
       index [:contact_list_id, :contact_id], :name=>:contact_list_member_contact_list_id_contact_id, :unique=>true
     end
