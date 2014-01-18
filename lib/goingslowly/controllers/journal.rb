@@ -236,14 +236,19 @@ module GS
       # appears immediately.
       #
       post '/comment' do
-        # abort on spammers who filled the honeypot field
-        if !params[:age].empty?
+
+        # create journal comment
+        comment = JournalComment.new(params[:comment])
+        # save captcha response
+        comment.captcha = params[:recaptcha_response_field]
+        comment.recaptcha = params
+
+        # abort on spammers who filled the honeypot field or
+        # journals with commenting disabled.
+        if !params[:age].empty? || comment.journal.nocomment
           halt 401
         end
 
-        # create journal entry
-        comment = JournalComment.new(params[:comment])
-        comment.recaptcha = params
         begin
           comment.save()
           # send email notifications for this comment
@@ -255,8 +260,7 @@ module GS
             end
           end
           # notify us of all comments
-          sendEmail('tyler@sleekcode.net', 'Going Slowly Comment', comment.email)
-          sendEmail('taraalan@gmail.com', 'Going Slowly Comment', comment.email)
+          sendEmail('us@goingslowly.com', 'Going Slowly Comment', comment.email)
 
           # clear all possible cache locations for this journal
           comment.journal.cacheLocations.each do |url|
