@@ -245,7 +245,7 @@ module GS
 
         # abort on spammers who filled the honeypot field or
         # journals with commenting disabled.
-        if !params[:age].empty? || comment.journal.nocomment
+        if !params[:age].empty? || comment.journal.nocomments
           halt 401
         end
 
