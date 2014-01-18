@@ -20,7 +20,7 @@
           li
             a href="#{CONFIG['url']['journal']}/#{item[:month].strftime('%Y')}/#{item[:month].strftime('%m')}" title="Entries for #{item[:month].strftime('%B, %Y')}"
               ' #{item[:month].strftime('%B, %Y')}
-            strong (#{item[:count]})
+            strong==item[:count]
 
   section
     nav
