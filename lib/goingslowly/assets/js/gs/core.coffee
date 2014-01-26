@@ -10,7 +10,6 @@ window._gaq.push(["_trackPageview"])
 # replace initial state so it works properly with popstate
 # todo: does not work correctly with firefox for getting to initial page
 window.onload = ->
-  console.log('replacing initial state')
   history.replaceState({real: true});
 
 # configure humane loggers

@@ -159,7 +159,7 @@ gs.journal =
           $(this).html(spinner).fadeIn 'fast', ->
             $.ajax
               type: 'GET',
-              url: url
+              url: url+'?ajax',
               success: (data) ->
                 $('#journal').html(data).css(marginLeft: (moveto * -1))
                              .animate({marginLeft: '0px'},250)
