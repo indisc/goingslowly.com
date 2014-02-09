@@ -240,12 +240,14 @@ module GS
         # create journal comment
         comment = JournalComment.new(params[:comment])
         # save captcha response
-        comment.captcha = params[:recaptcha_response_field]
-        comment.recaptcha = params
+        #comment.captcha = params[:recaptcha_response_field]
+        #comment.recaptcha = params
 
-        # abort on spammers who filled the honeypot field or
+        # abort on:
         # journals with commenting disabled.
-        if !params[:age].empty? || comment.journal.nocomments
+        # spammers who filled the honeypot field,
+        # people who entered their comment within 30 seconds of the page loading
+        if comment.journal.nocomments || !params[:age].empty? ||params[:time].to_i+30 > Time.now.to_i
           halt 401
         end
 

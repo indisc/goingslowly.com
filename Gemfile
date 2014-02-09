@@ -22,3 +22,4 @@ gem 'kgio' # speed up dalli
 gem 'aws-s3'
 gem 'rmagick'
 gem 'twitter'
+gem 'mailgun'

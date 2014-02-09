@@ -16,6 +16,8 @@ require 'riddle'
 require 'riddle/2.0.1'
 require 'soundcloud'
 require 'twitter'
+require 'mail'
+require 'mailgun'
 
 # Load configs
 CONFIG = YAML::load(File.open('config/goingslowly.yml'))
@@ -47,6 +49,12 @@ flickr.access_secret = AUTH['flickr']['access_secret']
 
 # Connect to Soundcloud
 SC = Soundcloud.new(:client_id=>AUTH['soundcloud']['client_id'])
+
+# Connect to Mailgun
+MGun = Mailgun({
+  :api_key => AUTH['mailgun']['api_key'],
+  :domain => AUTH['mailgun']['domain']
+})
 
 # Load helpers.
 require 'goingslowly/helpers/utils'

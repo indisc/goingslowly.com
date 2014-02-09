@@ -36,33 +36,14 @@ module GS
     # @return [Boolean]
     #   True if mail was delivered, false if not.
     #
-    def sendEmail(to,subject,body,from=CONFIG['email']['from'])
-
-      # build email
-      mail = Mail.new do
-        # assign to/from/subject
-        to      to
-        from    from
-        subject subject
-        # cache html body
-        body_html = body
-        # strip html from sent body
-        body_text = body.gsub(/<\/?[^>]*>/,"")
-        # send text email by default
-        text_part do
-          body body_text
-        end
-        # if body contained html, send that part too
-        if body_html != body_text
-          html_part do
-            content_type 'text/html; charset=UTF-8'
-            body body
-          end
-        end
-      end
-      # send it
-      mail.delivery_method :sendmail
-      mail.deliver!
+    def sendEmail(to, subject, body, from=CONFIG['email']['from'])
+      MGun.messages.send_email({
+        :to => to,
+        :from => from,
+        :subject => subject,
+        :text => body.gsub(/<\/?[^>]*>/,""),
+        :html => body
+      })
     end
 
   end
