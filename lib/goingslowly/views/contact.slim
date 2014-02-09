@@ -17,8 +17,9 @@ form.styled.ajax method='post'
   .clearfix
     label for="message" Message:
     textarea#message name="contact[message]" style="width:600px;height:150px"
-  .recaptcha
-    == partial :recaptcha
   .clearfix style="margin-left:130px"
     input.button type='submit' value='Send Message'
 br
+
+/  .recaptcha
+/    == partial :recaptcha
