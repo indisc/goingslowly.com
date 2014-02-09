@@ -247,7 +247,12 @@ module GS
         # journals with commenting disabled.
         # spammers who filled the honeypot field,
         # people who entered their comment within 30 seconds of the page loading
-        if comment.journal.nocomments || !params[:age].empty? || params[:timer].to_i == 0 || params[:timer].to_i+30 > Time.now.to_i
+        # people who didn't check the human box
+        if comment.journal.nocomments ||
+           params[:age].to_i != 0 ||
+           params[:timer].to_i == 0 ||
+           params[:timer].to_i+30 > Time.now.to_i
+           params[:check].nil?
           halt 401
         end
 

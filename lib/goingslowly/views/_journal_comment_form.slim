@@ -12,14 +12,17 @@ a name="commentform"
     .clearfix
       label.plain for="comment[alerts]"
       input#alerts type="checkbox" name="comment[alerts]" style="border:none;" value="CHECKED" checked="checked"
-      small.orange  receive email for new comments
+      small.orange receive email for new comments
     .clearfix
       label#label_website for="comment[url]" Website:
       input#url type="text" name="comment[url]" style="width:400px;"
     .clearfix
       label#label_body for="comment[body]" Comment:
       textarea#body name="comment[body]" style="width:500px;height:100px"
-
+    .clearfix
+      label.plain for="check"
+      input type="checkbox" name="check" style="border:none;" value="CHECKED"
+      small.orange check this box to prove you are human
     .clearfix style="margin-left:130px"
       input.button type='submit' value='Post Comment'
       br
