@@ -254,6 +254,7 @@ module GS
            params[:timer].to_i+30 > Time.now.to_i
            params[:check].nil?
           halt 401
+          sendEmail('tyler@sleekcode.net', 'spam thwarted', params.inspect)
         end
 
         begin
