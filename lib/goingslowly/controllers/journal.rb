@@ -247,7 +247,7 @@ module GS
         # journals with commenting disabled.
         # spammers who filled the honeypot field,
         # people who entered their comment within 30 seconds of the page loading
-        if comment.journal.nocomments || !params[:age].empty? ||params[:timer].to_i+30 > Time.now.to_i
+        if comment.journal.nocomments || !params[:age].empty? || params[:timer].to_i == 0 || params[:timer].to_i+30 > Time.now.to_i
           halt 401
         end
 
@@ -262,7 +262,7 @@ module GS
             end
           end
           # notify us of all comments
-          sendEmail('us@goingslowly.com', 'Going Slowly Comment', comment.email)
+          sendEmail('us@goingslowly.com', 'Going Slowly Comment', comment.email+request.inspect)
 
           # clear all possible cache locations for this journal
           comment.journal.cacheLocations.each do |url|
