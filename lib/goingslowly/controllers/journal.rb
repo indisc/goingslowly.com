@@ -239,22 +239,14 @@ module GS
 
         # create journal comment
         comment = JournalComment.new(params[:comment])
-        # save captcha response
-        #comment.captcha = params[:recaptcha_response_field]
-        #comment.recaptcha = params
 
-        # abort on:
-        # journals with commenting disabled.
-        # spammers who filled the honeypot field,
-        # people who entered their comment within 30 seconds of the page loading
-        # people who didn't check the human box
-        if comment.journal.nocomments ||
-           params[:age].to_i != 0 ||
-           params[:timer].to_i == 0 ||
-           params[:timer].to_i+30 > Time.now.to_i
-           params[:check].nil?
-          halt 401
+        if comment.journal.nocomments
+          pass
+        end
+
+        if isSpam?(request, params[:comment])
           sendEmail('tyler@sleekcode.net', 'spam thwarted', params.inspect)
+          halt 401
         end
 
         begin

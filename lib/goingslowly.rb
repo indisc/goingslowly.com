@@ -18,6 +18,7 @@ require 'soundcloud'
 require 'twitter'
 require 'mail'
 require 'mailgun'
+require 'akismet'
 
 # Load configs
 CONFIG = YAML::load(File.open('config/goingslowly.yml'))
@@ -56,6 +57,8 @@ MGun = Mailgun({
   :domain => AUTH['mailgun']['domain']
 })
 
+SpamCheck = Akismet::Client.new(AUTH['akismet']['key'],AUTH['akismet']['domain'])
+
 # Load helpers.
 require 'goingslowly/helpers/utils'
 require 'goingslowly/helpers/assets'
@@ -63,6 +66,7 @@ require 'goingslowly/helpers/forms'
 require 'goingslowly/helpers/email'
 require 'goingslowly/helpers/core_ext'
 require 'goingslowly/helpers/context'
+require 'goingslowly/helpers/journal'
 
 # Load classes.
 require 'goingslowly/classes/flickr'
