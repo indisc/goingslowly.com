@@ -244,8 +244,13 @@ module GS
           pass
         end
 
-        if isSpam?(request, params[:comment])
-          sendEmail('tyler@sleekcode.net', 'spam thwarted', params.inspect)
+        honeypotFilled = params[:age].to_i != 0
+        timerViolated = (params[:timer].to_i == 0 || params[:timer].to_i+30 > Time.now.to_i)
+
+        if honeypotFilled || timerViolated || isSpam?(request, params[:comment])
+          if honeypotFilled || timerViolated
+            sendEmail('tyler@sleekcode.net', 'spam thwarted', "honeypot: #{honeypotFilled}\ntimer: #{timerViolated}")
+          end
           halt 401
         end
 
