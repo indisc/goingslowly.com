@@ -246,9 +246,10 @@ module GS
 
         honeypotFilled = params[:age].to_i != 0
         timerViolated = (params[:timer].to_i == 0 || params[:timer].to_i+30 > Time.now.to_i)
+        humanCheckboxEmpty = params[:check].nil?
 
-        if honeypotFilled || timerViolated || isSpam?(request, params[:comment])
-          if honeypotFilled || timerViolated
+        if humanCheckboxEmpty || honeypotFilled || timerViolated || isSpam?(request, params[:comment])
+          if humanCheckboxEmpty || honeypotFilled || timerViolated
             sendEmail('tyler@sleekcode.net', 'spam thwarted', "honeypot: #{honeypotFilled}\ntimer: #{timerViolated}")
           end
           halt 401
