@@ -250,7 +250,7 @@ module GS
 
         if humanCheckboxEmpty || honeypotFilled || timerViolated || isSpam?(request, params[:comment])
           if humanCheckboxEmpty || honeypotFilled || timerViolated
-            sendEmail('tyler@sleekcode.net', 'spam thwarted', "honeypot: #{honeypotFilled}\ntimer: #{timerViolated}")
+            #sendEmail('tyler@sleekcode.net', 'spam thwarted', "honeypot: #{honeypotFilled}\ntimer: #{timerViolated}")
           end
           halt 401
         end
